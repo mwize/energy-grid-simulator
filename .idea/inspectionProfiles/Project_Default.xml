@@ -1,0 +1,84 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="anki" />
+          <option value="appdirs" />
+          <option value="aqt" />
+          <option value="attrs" />
+          <option value="autocommand" />
+          <option value="beautifulsoup4" />
+          <option value="blinker" />
+          <option value="CacheControl" />
+          <option value="certifi" />
+          <option value="cffi" />
+          <option value="chardet" />
+          <option value="charset-normalizer" />
+          <option value="click" />
+          <option value="cryptography" />
+          <option value="cssselect" />
+          <option value="distro" />
+          <option value="filelock" />
+          <option value="Flask" />
+          <option value="flask-cors" />
+          <option value="html5lib" />
+          <option value="idna" />
+          <option value="itsdangerous" />
+          <option value="jaraco.collections" />
+          <option value="jaraco.context" />
+          <option value="jaraco.functools" />
+          <option value="jaraco.text" />
+          <option value="Jinja2" />
+          <option value="jsonschema" />
+          <option value="jsonschema-specifications" />
+          <option value="lxml" />
+          <option value="Mako" />
+          <option value="Markdown" />
+          <option value="MarkupSafe" />
+          <option value="more-itertools" />
+          <option value="msgpack" />
+          <option value="orjson" />
+          <option value="pillow" />
+          <option value="pkg_resources" />
+          <option value="protobuf" />
+          <option value="pycairo" />
+          <option value="pycparser" />
+          <option value="pygdbmi" />
+          <option value="PyGObject" />
+          <option value="PyQt6" />
+          <option value="PyQt6-WebEngine" />
+          <option value="PyQt6_sip" />
+          <option value="pyserial" />
+          <option value="PySocks" />
+          <option value="referencing" />
+          <option value="requests" />
+          <option value="rpds-py" />
+          <option value="scour" />
+          <option value="Send2Trash" />
+          <option value="sentry-sdk" />
+          <option value="setuptools" />
+          <option value="smbus" />
+          <option value="soupsieve" />
+          <option value="tbb" />
+          <option value="tinycss2" />
+          <option value="typing_extensions" />
+          <option value="urllib3" />
+          <option value="VapourSynth" />
+          <option value="waitress" />
+          <option value="webencodings" />
+          <option value="Werkzeug" />
+          <option value="wheel" />
+          <option value="zstandard" />
+          <option value="openai" />
+          <option value="python-dotenv" />
+          <option value="pynput" />
+          <option value="sounddevice" />
+          <option value="numpy" />
+          <option value="scipy" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
