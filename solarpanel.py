@@ -3,7 +3,7 @@ from producer import Producer
 class SolarPanel(Producer):
     """Produces energy when the sun is shining."""
 
-    def __init__(self, name: str, max_capacity: int):
+    def __init__(self, name: str, max_capacity: float):
         super().__init__(name, max_capacity)
 
     def get_current_capacity(self, weather: float, hour: int):

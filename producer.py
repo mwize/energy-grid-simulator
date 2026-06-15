@@ -1,11 +1,11 @@
 class Producer:
     """Parent class for all power producers"""
 
-    def __init__(self, name: str, max_capacity: int):
+    def __init__(self, name: str, max_capacity: float):
         self.name = name
         self.max_capacity = max_capacity # in kW
 
-    def get_current_capacity(self, weather: float, hour: int) -> int:
+    def get_current_capacity(self, weather: float, hour: int) -> float:
         """Returns current power production"""
         raise NotImplementedError("Class must be implemented by Subclass")
 
