@@ -17,7 +17,8 @@ Das System ist stark modular aufgebaut. Neue Erzeuger oder Verbraucher können i
 
 **A. Das Management: `EnergyGrid`**
 * **Attribute:** Listen für `producers`, `consumers` und `batteries`. Das aktuelle `weather`.
-* **Methoden:** * `simulate_step()`: Führt einen Zeit-Tick (z.B. eine Stunde) in der Simulation aus.
+* **Methoden:** 
+    * `simulate_step()`: Führt einen Zeit-Tick (z.B. eine Stunde) in der Simulation aus.
     * `balance_grid()`: Kern-Algorithmus zum Ausgleich von Erzeugung und Verbrauch.
 * **Interaktion:** Das Grid ist der "Orchestrator". Es iteriert über alle Erzeuger, um die verfügbare Gesamtenergie zu berechnen, und gleicht diese mit der Summe des Bedarfs aller Verbraucher ab. Überschüsse leitet es an die Methoden der `Battery`-Objekte weiter.
 
