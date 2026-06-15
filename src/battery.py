@@ -1,8 +1,11 @@
-class Battery:
+from .energy_asset import EnergyAsset
+
+class Battery(EnergyAsset):
     """Can store energy"""
 
     def __init__(self, capacity: float, current_charge: float,
                  max_charge_rate: float, max_discharge_rate: float):
+        super().__init__("Battery")
         self.capacity = capacity
         self.current_charge = current_charge
         self.max_charge_rate = max_charge_rate
