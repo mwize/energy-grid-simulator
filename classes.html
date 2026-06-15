@@ -1,0 +1,27 @@
+<html>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+      <div class="mermaid">
+    
+        classDiagram
+          class Battery {
+            capacity : float
+            current_charge : float
+            max_charge_rate : float
+            max_discharge_rate : float
+            charge(amount: float) float
+            discharge(amount: float) float
+          }
+          class Producer {
+            max_capacity : float
+            name : str
+            get_current_capacity(weather: float, hour: int)* float
+          }
+          class SolarPanel {
+            get_current_capacity(weather: float, hour: int)
+          }
+          SolarPanel --|> Producer
+  
+       </div>
+  </body>
+</html>
