@@ -6,7 +6,7 @@ class SolarPanel(Producer):
     def __init__(self, name: str, max_capacity: float):
         super().__init__(name, max_capacity)
 
-    def get_current_capacity(self, weather: float, hour: int):
+    def get_current_capacity(self, weather: float, hour: int) -> float:
         """Returns current power production by solar panel"""
 
         if 6 <= hour <= 18:
