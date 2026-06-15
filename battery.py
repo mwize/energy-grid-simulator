@@ -2,7 +2,7 @@ class Battery:
     """Can store energy"""
 
     def __init__(self, capacity: float, current_charge: float,
-                 max_charge_rate: float, max_discharge_rate: float, hours_used: int):
+                 max_charge_rate: float, max_discharge_rate: float):
         self.capacity = capacity
         self.current_charge = current_charge
         self.max_charge_rate = max_charge_rate
