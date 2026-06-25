@@ -6,8 +6,8 @@ from .energy_asset import EnergyAsset
 class Producer(EnergyAsset, ABC):
     """Parent class for all power producers"""
 
-    def __init__(self, name: str, max_capacity: float, efficiency: float):
-        super().__init__(name)
+    def __init__(self, name: str, max_capacity: float, efficiency: float, asset_id: int):
+        super().__init__(name, True, asset_id)
         self.max_capacity = max_capacity # in kW
         self.efficiency = efficiency
 
