@@ -1,15 +1,12 @@
+from abc import ABC
+
 from .producer import Producer
 
-class SolarPanel(Producer):
+class SolarPlant(Producer, ABC):
     """Produces energy when the sun is shining."""
 
-    def __init__(self, max_capacity: float):
-        super().__init__("Solar Panel", max_capacity)
+    def __init__(self, max_capacity: float, asset_id: int):
+        super().__init__("Solar Panel", max_capacity, 1, asset_id) # may have to be changed
 
-    def get_current_capacity(self, weather: float, hour: int) -> float:
-        """Returns current power production by solar panel"""
-
-        if 6 <= hour <= 18:
-            return weather * self.max_capacity
-
-        return 0
+    def produce(self, current_hour: int, weather_data: dict) -> float:
+        pass
