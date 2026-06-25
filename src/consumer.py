@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
-from energy_asset import EnergyAsset
+from .energy_asset import EnergyAsset
 
 
-class Consumer(ABC, EnergyAsset):
+class Consumer(EnergyAsset, ABC):
     """Parent class for all power consumers"""
 
     def __init__(self, name: str, peak_power_demand: float, consumption_profile: list[float], priority: int, asset_id: int):

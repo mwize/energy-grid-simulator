@@ -1,6 +1,6 @@
 from abc import ABC
 
-from producer import Producer
+from .producer import Producer
 
 
 class PowerPlant(Producer, ABC):

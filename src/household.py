@@ -1,6 +1,6 @@
 from abc import ABC
 
-from consumer import Consumer
+from .consumer import Consumer
 
 
 class HouseHold(ABC, Consumer):
