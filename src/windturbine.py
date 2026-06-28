@@ -1,9 +1,7 @@
-from abc import ABC
-
 from .producer import Producer
 
 
-class WindTurbine(Producer, ABC):
+class WindTurbine(Producer):
     """Produces energy when the wind is blowing."""
 
     def __init__(self, max_capacity: float, asset_id: int):

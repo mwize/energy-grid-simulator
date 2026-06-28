@@ -1,9 +1,7 @@
-from abc import ABC
-
 from .consumer import Consumer
 
 
-class HouseHold(ABC, Consumer):
+class HouseHold(Consumer):
     """"""
 
     def __init__(self, asset_id: int, num_residents: int, priority: int):
