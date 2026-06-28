@@ -1,7 +1,7 @@
 class NetController:
     def __init__(self):
         self.time_elapsed = 0
-        weather_data = {
+        self.weather_data = {
             "cloud_coefficient": .5,
             "wind_coefficient": .5
         }
