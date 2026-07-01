@@ -1,5 +1,5 @@
-from weather_controller import WeatherController
-from src.battery_controller import BatteryController
+from controller.battery_controller import BatteryController
+from controller.weather_controller import WeatherController
 
 
 class GridSimulator:
@@ -40,3 +40,7 @@ class GridSimulator:
         if bal < 0:
             for asset in self.grid_members:
                 asset.is_connected = False
+
+    def remove_member(self, asset_id) -> None:
+        """Removes an asset from the grid by its ID."""
+        self.grid_members = [a for a in self.grid_members if a.asset_id != asset_id]

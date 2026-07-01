@@ -1,8 +1,13 @@
 import streamlit as st
 import pandas as pd
 
+from functools import partial
 from assets.energy_asset import EnergyAsset
+
+from assets.powerplant import PowerPlant
+from assets.windturbine import WindTurbine
 from pages.asset_card import create_asset_card
+
 
 
 def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict):
@@ -16,20 +21,35 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
     # BUILD MENU
 
 
+
+    def add_asset(asset_class, *args):
+        """Callback: creates a new asset and adds it to the grid simulator."""
+        new_asset = asset_class(*args)
+        st.session_state.grid_simulator.add_member(new_asset)
+
     with main_cols[0]:
         st.title("Build Menu")
         with st.container(height=760, border=True):
             st.subheader("Producer")
-            st.button("Wind Turbine", icon=":material/wind_power:", use_container_width=True)
-            st.button("Power Plant", icon=":material/bolt:", use_container_width=True)
-
+            st.button(
+                "Wind Turbine",
+                icon=":material/wind_power:",
+                use_container_width=True,
+                on_click=partial(add_asset, WindTurbine),
+            )
+            st.button(
+                "Power Plant",
+                icon=":material/bolt:",
+                use_container_width=True,
+                on_click=partial(add_asset, PowerPlant),
+            )
             st.subheader("Consumer")
 
 
     # Assets Menu
 
     with main_cols[1]:
-        header_cols = st.columns([3, 1], gap="small") # ratio: Header and time indicator
+        header_cols = st.columns([3, 1], gap="small") # ratio: Header and time indicatorx
         with header_cols[0]:
             st.title("Assets")
         with header_cols[1]:
