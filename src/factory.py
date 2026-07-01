@@ -1,9 +1,8 @@
-from abc import ABC
 
 from .consumer import Consumer
 
 
-class Factory(ABC, Consumer):
+class Factory(Consumer):
     """Consumes constant energy value"""
 
     def __init__(self, asset_id: int, demand: float, priority: int):

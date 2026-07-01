@@ -1,8 +1,6 @@
-from abc import ABC
-
 from .producer import Producer
 
-class SolarPlant(Producer, ABC):
+class SolarPlant(Producer):
     """Produces energy when the sun is shining."""
 
     def __init__(self, max_capacity: float, asset_id: int):

@@ -1,9 +1,7 @@
-from abc import ABC
-
 from .producer import Producer
 
 
-class PowerPlant(Producer, ABC):
+class PowerPlant(Producer):
     """Produces energy from fossile energy sources"""
 
     def __init__(self, max_capacity: float,efficiency: float, asset_id: int):
