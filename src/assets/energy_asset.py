@@ -15,7 +15,9 @@ class EnergyAsset(ABC):
         return new_id
 
 
-    def __init__(self, name: str, is_connected: bool, asset_id: int = None):
+
+
+    def __init__(self, name: str = "EnergyAsset", is_connected: bool = True, asset_id: int = None):
         #generates a UUID if asset_id is not set
         if not asset_id:
             asset_id = self._generate_id()

@@ -7,7 +7,8 @@ class Consumer(EnergyAsset, ABC):
     """Parent class for all power consumers"""
 
     def __init__(self, name: str, peak_power_demand: float, consumption_profile: list[float], priority: int, asset_id: int):
-        super().__init__(name, True, asset_id)
+        """Initializes a consumer with a name, peak power demand, consumption profile, priority, and asset ID."""
+        super().__init__(name = name, is_connected = True, asset_id=asset_id)
         self.peak_power_demand = peak_power_demand
         self.consumption_profile = consumption_profile
         self.priority = priority
