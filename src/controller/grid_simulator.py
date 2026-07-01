@@ -1,5 +1,5 @@
 from weather_controller import WeatherController
-from battery_controller import BatteryController
+from src.battery_controller import BatteryController
 
 
 class GridSimulator:
