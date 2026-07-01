@@ -1,4 +1,4 @@
-from .producer import Producer
+from src.producer import Producer
 
 class SolarPlant(Producer):
     """Produces energy when the sun is shining."""
@@ -7,4 +7,4 @@ class SolarPlant(Producer):
         super().__init__("Solar Panel", max_capacity, 1, asset_id) # may have to be changed
 
     def produce(self, current_hour: int, weather_data: dict) -> float:
-        pass
+        return 100

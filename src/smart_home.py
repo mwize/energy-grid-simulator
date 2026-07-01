@@ -1,6 +1,5 @@
-from .household import HouseHold
-from .consumer import Consumer
-from .producer import Producer
+from src.household import HouseHold
+from src.producer import Producer
 
 
 class SmartHome(HouseHold, Producer):
