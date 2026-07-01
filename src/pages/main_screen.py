@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from energy_asset import EnergyAsset
+from assets.energy_asset import EnergyAsset
 from pages.asset_card import create_asset_card
 
 
