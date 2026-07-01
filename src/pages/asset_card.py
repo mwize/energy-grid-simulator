@@ -14,6 +14,9 @@ class AssetCard(ABC):
         self.icon = icon
         self.asset = asset
 
+    def remove_asset(self):
+        st.session_state.assets = [a for a in st.session_state.assets if a.asset_id != self.asset.asset_id]
+
     def render(self, weather_data, time):
         self.sync_state()
 
@@ -39,7 +42,7 @@ class AssetCard(ABC):
                 btn_label = "🔴 Disconnect" if self.asset.is_connected else "🟢 Connect"
                 st.button(btn_label, use_container_width=True, key=f"con_btn_{self.asset.asset_id}", on_click=self.asset.toggle_connect)
             with button_cols[1]:
-                st.button("🗑️", use_container_width=True, key=f"rmv_btn_{self.asset.asset_id}")
+                st.button("🗑️", use_container_width=True, key=f"rmv_btn_{self.asset.asset_id}", on_click=self.remove_asset)
 
     @abstractmethod
     def sync_state(self):
