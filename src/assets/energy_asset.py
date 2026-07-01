@@ -16,6 +16,7 @@ class EnergyAsset(ABC):
 
 
 
+
     def __init__(self, name: str = "EnergyAsset", is_connected: bool = True, asset_id: int = None):
         #generates a UUID if asset_id is not set
         if not asset_id:
