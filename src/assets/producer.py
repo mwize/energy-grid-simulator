@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from .energy_asset import EnergyAsset
+from assets.energy_asset import EnergyAsset
 
 
 class Producer(EnergyAsset, ABC):

@@ -1,4 +1,4 @@
-from .producer import Producer
+from assets.producer import Producer
 import math
 
 class WindTurbine(Producer):

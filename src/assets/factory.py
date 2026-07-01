@@ -1,5 +1,5 @@
 
-from .consumer import Consumer
+from assets.consumer import Consumer
 
 
 class Factory(Consumer):
