@@ -17,7 +17,7 @@ class GridSimulator:
 
     def step(self) -> None:
         """Simulates one time step (one hour)."""
-        balance = self.update_assets(self.time_elapsed, self.weather_controller.get_weather(self.time_elapsed))
+        balance = self.update_assets(self.time_elapsed, self.weather_controller.get_weather_data(self.time_elapsed))
         actual_diff = self.update_battery(balance)
         self.overload_check(actual_diff)
         
@@ -31,7 +31,7 @@ class GridSimulator:
             total += asset.update(current_hour, weather_data)
         return total
 
-    def update_battery(self, net_balance: float) -> None:
+    def update_battery(self, net_balance: float) -> float:
         """Stores surplus or covers a deficit via the battery."""
         return self.battery_controller.store(net_balance)
 

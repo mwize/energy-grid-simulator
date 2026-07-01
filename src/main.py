@@ -3,7 +3,8 @@ import streamlit as st
 from assets.energy_asset import EnergyAsset
 from assets.powerplant import PowerPlant
 from assets.solarplant import SolarPlant
-from controller import weather_controller, battery_controller
+from controller.weather_controller import WeatherController
+from controller.battery_controller import BatteryController
 from controller.grid_simulator import GridSimulator
 from pages.main_screen import main_screen
 from pages.utils.styling_utils import inject_custom_css
@@ -11,25 +12,18 @@ from pages.utils.styling_utils import inject_custom_css
 
 @st.fragment(run_every=1)
 def live_dashboard():
-    # Zeit hochzählen
-    st.session_state.sim_time += 1
-
-    # Wetter berechnen/abrufen
-    weather_data = {
-        "sun_intensity": 0.5,
-        "wind_intensity": 0.5,
-    }
-
-    # UI rendern
+    st.session_state.grid_simulator.step()
     main_screen(
         assets=st.session_state.grid_simulator.grid_members,
-        current_time=st.session_state.sim_time,
-        weather_data=weather_data
+        current_time=st.session_state.grid_simulator.time_elapsed,
+        weather_data=st.session_state.grid_simulator.weather_controller.get_weather_data(
+            st.session_state.grid_simulator.time_elapsed
+        )
     )
 
 def main():
     if "grid_simulator" not in st.session_state:
-        st.session_state.grid_simulator = GridSimulator(weather_controller, battery_controller)
+        st.session_state.grid_simulator = GridSimulator(WeatherController(), BatteryController())
     st.set_page_config(layout="wide")
     inject_custom_css()
     if not st.session_state.grid_simulator.grid_members:
