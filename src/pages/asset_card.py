@@ -1,11 +1,9 @@
 from abc import abstractmethod, ABC
 import streamlit as st
 
-from powerplant import PowerPlant
-from solarplant import SolarPlant
-from energy_asset import EnergyAsset
-
-
+from assets.energy_asset import EnergyAsset
+from assets.powerplant import PowerPlant
+from assets.solarplant import SolarPlant
 
 
 class AssetCard(ABC):
