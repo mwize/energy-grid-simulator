@@ -37,7 +37,7 @@ class AssetCard(ABC):
             button_cols = st.columns([4, 1], gap="small")
             with button_cols[0]:
                 btn_label = "🔴 Disconnect" if self.asset.is_connected else "🟢 Connect"
-                st.button(btn_label, use_container_width=True, key=f"con_btn_{self.asset.asset_id}")
+                st.button(btn_label, use_container_width=True, key=f"con_btn_{self.asset.asset_id}", on_click=self.asset.toggle_connect)
             with button_cols[1]:
                 st.button("🗑️", use_container_width=True, key=f"rmv_btn_{self.asset.asset_id}")
 
