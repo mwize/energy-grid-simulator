@@ -1,6 +1,6 @@
 import random
 import math
-import src.controller.env as env
+import src.env as env
 
 class WeatherController:
     def __init__(self):
