@@ -1,6 +1,5 @@
-from .household import HouseHold
-from .consumer import Consumer
-from .producer import Producer
+from assets.household import HouseHold
+from assets.producer import Producer
 
 import src.env
 import math
