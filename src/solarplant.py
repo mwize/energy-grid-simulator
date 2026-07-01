@@ -7,4 +7,4 @@ class SolarPlant(Producer):
         super().__init__("Solar Panel", max_capacity, 1, asset_id) # may have to be changed
 
     def produce(self, current_hour: int, weather_data: dict) -> float:
-        pass
+        return self.max_capacity * weather_data["cloud_coefficient"]
