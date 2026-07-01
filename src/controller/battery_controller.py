@@ -7,28 +7,16 @@ class BatteryController:
         self.curr_kwh = curr_kwh
         self.max_kwh = max_kwh
         self.max_charge_rate = max_charge_rate
+        #should be positive
         self.max_discharge_rate = max_discharge_rate
 
     def store(self, surplus: float) -> float:
-        """Stores surplus energy and returns the amount that did not fit."""
+        """Takes net ammount of energy to be stored (positive) or taken from (negative) the battery
+        Returns how much energy couldnt be stored (positive), or how much energy could not be taken from the battery"""
+
         pre_comp = self.curr_kwh
 
-        actual_input = env.clamp(surplus, 0, self.max_charge_rate)
+        actual_input = env.clamp(surplus, -self.max_discharge_rate, self.max_charge_rate)
         self.curr_kwh = env.clamp(pre_comp+actual_input, 0, self.max_kwh)
+        #calculating diff between pre and post storing operation
         return pre_comp + surplus - self.curr_kwh
-
-    def supply(self, deficit: float) -> float:
-        """Discharges energy to cover a deficit and returns the uncovered amount (negative).
-            Takes a negative number!!!"""
-        pre_comp = self.curr_kwh
-        actual_output = env.clamp(deficit, -self.max_discharge_rate, 0)
-        self.curr_kwh = env.clamp(pre_comp + actual_output, 0, self.max_kwh)
-        return pre_comp + deficit -self.curr_kwh
-    
-batt = BatteryController(0, 5, 2, 1)
-
-print(batt.store(1))
-print(batt.curr_kwh)
-
-print(batt.supply(-3))
-print(batt.curr_kwh)

@@ -1,5 +1,5 @@
-from ..assets.weather_controller import WeatherController
-from .battery_controller import BatteryController
+from weather_controller import WeatherController
+from battery_controller import BatteryController
 
 
 class GridSimulator:
@@ -18,8 +18,9 @@ class GridSimulator:
     def step(self) -> None:
         """Simulates one time step (one hour)."""
         balance = self.update_assets(self.time_elapsed, self.weather_controller.get_weather(self.time_elapsed))
-        #overload_check()
-        #update_battery()
+        actual_diff = self.update_battery(balance)
+        self.overload_check(actual_diff)
+        
         self.time_elapsed += 1
         pass
 
@@ -32,8 +33,10 @@ class GridSimulator:
 
     def update_battery(self, net_balance: float) -> None:
         """Stores surplus or covers a deficit via the battery."""
-        pass
+        return self.battery_controller.store(net_balance)
 
-    def overload_check(self) -> bool:
-        """Checks whether the grid is currently overloaded."""
-        pass
+    def overload_check(self, bal: float) -> bool:
+        """Checks whether the grid is currently overloaded and turns off all Assets if this is the case"""
+        if bal < 0:
+            for asset in self.grid_members:
+                asset.is_connected = False
