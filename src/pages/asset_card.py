@@ -4,6 +4,7 @@ import streamlit as st
 from assets.energy_asset import EnergyAsset
 from assets.powerplant import PowerPlant
 from assets.solarplant import SolarPlant
+from assets.windturbine import WindTurbine
 
 
 class AssetCard(ABC):
@@ -13,7 +14,7 @@ class AssetCard(ABC):
         self.asset = asset
 
     def remove_asset(self):
-        st.session_state.assets = [a for a in st.session_state.assets if a.asset_id != self.asset.asset_id]
+        st.session_state.grid_simulator.remove_member(self.asset.asset_id)
 
     def render(self, weather_data, time):
         self.sync_state()
@@ -112,8 +113,29 @@ class PowerPlantCard(AssetCard):
             key=self.eff_key
         )
 
+# Asset Card for WindTurbine
+class WindTurbineCard(AssetCard):
+    # Settings
+    WIND_SLIDER_MAX = 100
 
+    def __init__(self, wind_asset: WindTurbine):
+        super().__init__("💨", wind_asset)
 
+        self.cap_key = f"cap_sld_{self.asset.asset_id}"  # Key for capacity slider
+        self.wind_asset = wind_asset
+
+    def sync_state(self):
+        if self.cap_key in st.session_state:  # update capacity when slider changed
+            self.wind_asset.max_capacity = st.session_state[self.cap_key]
+
+    def render_ui_elements(self, weather_data, time):
+        # capacity slider to change Production
+        st.slider(
+            "Capacity",
+            min_value=0, max_value=self.WIND_SLIDER_MAX,
+            value=int(self.wind_asset.max_capacity),
+            key=self.cap_key
+        )
 
 
 def create_asset_card(asset: EnergyAsset) -> AssetCard:
@@ -122,5 +144,7 @@ def create_asset_card(asset: EnergyAsset) -> AssetCard:
         return SolarPlantCard(asset)
     elif isinstance(asset, PowerPlant):
         return PowerPlantCard(asset)
+    elif isinstance(asset, WindTurbine):
+        return WindTurbineCard(asset)
     else:
         raise ValueError(f"No card defined for asset type {type(asset)}")
