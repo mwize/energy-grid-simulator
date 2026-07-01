@@ -18,7 +18,7 @@ class AssetCard(ABC):
     def render(self, weather_data, time):
         self.sync_state()
 
-        main_border = st.container(border=True, height=430)
+        main_border = st.container(border=True, height=440)
 
         with main_border:
             title_cols = st.columns([1, 1], gap="small")
