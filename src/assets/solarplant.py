@@ -1,6 +1,6 @@
+import env
 from assets.producer import Producer
 import math
-import src.env
 
 class SolarPlant(Producer):
     """Produces energy when the sun is shining (based on time of day and weather conditions)"""
@@ -11,4 +11,4 @@ class SolarPlant(Producer):
 
     def produce(self, current_hour: int, weather_data: dict) -> float:
         """returns produced power based on the time of day and current weather situation"""
-        return (src.env.clamp((0.6*math.sin(math.pi/12 * current_hour - 2)+0.6), 0 , 1) ** 1.5) * weather_data["sun_intensity"] * self.max_capacity * self.efficiency
+        return (env.clamp((0.6 * math.sin(math.pi / 12 * current_hour - 2) + 0.6), 0, 1) ** 1.5) * weather_data["sun_intensity"] * self.max_capacity * self.efficiency
