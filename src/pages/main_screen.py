@@ -84,21 +84,29 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
             st.divider()
 
             # Initialize power history in session state
-            if "power_history" not in st.session_state:
-                st.session_state.power_history = []
+            if "power_wind_sun_history" not in st.session_state:
+                st.session_state.power_wind_sun_history = []
 
-            # Add datapoint to power history
-            st.session_state.power_history.append({
+            # Add datapoint to historic data
+            weather = st.session_state.grid_simulator.weather_controller.get_weather_data(current_time)
+            st.session_state.power_wind_sun_history.append({
                 "Time": current_time,
-                "power": total_kwh
+                "power": total_kwh,
+                "wind": weather["wind_intensity"],
+                "sun": weather["sun_intensity"]
             })
 
-            # Limit power history to 50 ticks
-            if len(st.session_state.power_history) > 50:
-                st.session_state.power_history.pop(0)  # Delete oldest value
+            # Limit history to 50 ticks
+            if len(st.session_state.power_wind_sun_history) > 50:
+                # Delete old data
+                st.session_state.power_wind_sun_history.pop(0)
 
-            # Visualize Power Production in line chart
+            df = pd.DataFrame(st.session_state.power_wind_sun_history).set_index("Time")
+
+            # Chart 1: showing power output over time
             st.subheader("Power Output")
+            st.line_chart(df[["power"]], color=["#2E86C1"], height=200)
 
-            df = pd.DataFrame(st.session_state.power_history).set_index("Time")
-            st.line_chart(df, color="#2E86C1", height=200)
+            # Chart 2: showing weather over time
+            st.subheader("Weather")
+            st.line_chart(df[["wind", "sun"]], color=["red", "green"], height=200)
