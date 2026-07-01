@@ -1,4 +1,4 @@
-from .producer import Producer
+from src.producer import Producer
 
 
 class PowerPlant(Producer):

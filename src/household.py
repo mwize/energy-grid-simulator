@@ -1,4 +1,4 @@
-from .consumer import Consumer
+from src.consumer import Consumer
 
 
 class HouseHold(Consumer):

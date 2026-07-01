@@ -1,4 +1,4 @@
-from .producer import Producer
+from src.producer import Producer
 
 class SolarPlant(Producer):
     """Produces energy when the sun is shining."""
