@@ -2,6 +2,7 @@ from abc import abstractmethod, ABC
 import streamlit as st
 
 from assets.energy_asset import EnergyAsset
+from assets.household import HouseHold
 from assets.powerplant import PowerPlant
 from assets.solarplant import SolarPlant
 from assets.windturbine import WindTurbine
@@ -137,6 +138,29 @@ class WindTurbineCard(AssetCard):
             key=self.cap_key
         )
 
+class HouseHoldCard(AssetCard):
+    # Settings
+    HOUSE_SLIDER_MAX = 100
+
+    def __init__(self, house_asset: HouseHold):
+        super().__init__("🏠", house_asset)
+
+        self.pwd_key = f"pwd_sld_{self.asset.asset_id}"  # Key for capacity slider
+        self.house_asset = house_asset
+
+    def sync_state(self):
+        if self.pwd_key in st.session_state:  # update capacity when slider changed
+            self.house_asset.peak_power_demand = st.session_state[self.pwd_key]
+
+    def render_ui_elements(self, weather_data, time):
+        # Power Demand slider to change Production
+        st.slider(
+            "Power Demand",
+            min_value=0, max_value=self.HOUSE_SLIDER_MAX,
+            value=int(self.house_asset.peak_power_demand),
+            key=self.pwd_key
+        )
+
 
 def create_asset_card(asset: EnergyAsset) -> AssetCard:
     """Returns UI card for specific EnergyAsset"""
@@ -146,5 +170,7 @@ def create_asset_card(asset: EnergyAsset) -> AssetCard:
         return PowerPlantCard(asset)
     elif isinstance(asset, WindTurbine):
         return WindTurbineCard(asset)
+    elif isinstance(asset, HouseHold):
+        return HouseHoldCard(asset)
     else:
         raise ValueError(f"No card defined for asset type {type(asset)}")

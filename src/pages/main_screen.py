@@ -3,6 +3,7 @@ import pandas as pd
 
 from functools import partial
 from assets.energy_asset import EnergyAsset
+from assets.household import HouseHold
 
 from assets.powerplant import PowerPlant
 from assets.windturbine import WindTurbine
@@ -44,6 +45,12 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
                 on_click=partial(add_asset, PowerPlant),
             )
             st.subheader("Consumer")
+            st.button(
+                "Household",
+                icon=":material/house:",
+                use_container_width=True,
+                on_click=partial(add_asset, HouseHold),
+            )
 
 
     # Assets Menu
