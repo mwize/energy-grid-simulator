@@ -241,7 +241,7 @@ class FactoryCard(AssetCard):
 class SmartHomeCard(AssetCard):
     # Settings
     MAX_RESIDENTS_SLIDER_MAX = 10
-    MAX_CAPACITY_SLIDER_MAX = 5.0
+    MAX_CAPACITY_SLIDER_MAX = 6
 
     def __init__(self, smart_home_asset: SmartHome):
         super().__init__("🏡", smart_home_asset)
@@ -267,11 +267,10 @@ class SmartHomeCard(AssetCard):
 
         # max capacity slider
         st.slider(
-            "Max Solar Prod. / Resident (kW)",
-            min_value=0.0, max_value=self.MAX_CAPACITY_SLIDER_MAX,
-            value=float(self.smart_home_asset.max_capacity),
-            key=self.capacity_key,
-            step=0.1
+            "Solar Panels / Resident",
+            min_value=0, max_value=self.MAX_CAPACITY_SLIDER_MAX,
+            value=int(self.smart_home_asset.solar_panel.max_capacity),
+            key=self.capacity_key
         )
 
 
@@ -280,6 +279,8 @@ class SmartHomeCard(AssetCard):
 
 def create_asset_card(asset: EnergyAsset) -> AssetCard:
     """Returns UI card for specific EnergyAsset"""
+    if isinstance(asset, SmartHome):
+        return SmartHomeCard(asset)
     if isinstance(asset, SolarPlant):
         return SolarPlantCard(asset)
     elif isinstance(asset, PowerPlant):
@@ -292,7 +293,6 @@ def create_asset_card(asset: EnergyAsset) -> AssetCard:
         return ChargerCard(asset)
     elif isinstance(asset, Factory):
         return FactoryCard(asset)
-    elif isinstance(asset, SmartHome):
-        return SmartHomeCard(asset)
+    
     else:
         raise ValueError(f"No card defined for asset type {type(asset)}")
