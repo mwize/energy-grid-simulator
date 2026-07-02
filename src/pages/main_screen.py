@@ -133,7 +133,7 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
 
             # Chart 1: showing power output over time
             st.subheader("Power Output")
-            st.line_chart(df[["power"]], color=["#2E86C1"], height=200)
+            st.line_chart(df[["production", "consumption"]], color=["green", "yellow"], height=200)
 
             # Chart 2: showing weather over time
             st.subheader("Weather")
