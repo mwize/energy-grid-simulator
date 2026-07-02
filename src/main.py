@@ -27,8 +27,8 @@ def main():
     st.set_page_config(layout="wide")
     inject_custom_css()
     if not st.session_state.grid_simulator.grid_members:
-        st.session_state.grid_simulator.add_member(SolarPlant(EnergyAsset._generate_id()))
-        st.session_state.grid_simulator.add_member(PowerPlant(EnergyAsset._generate_id()))
+        st.session_state.grid_simulator.add_member(SolarPlant())
+        st.session_state.grid_simulator.add_member(PowerPlant())
 
     if "sim_time" not in st.session_state:
         st.session_state.sim_time = 0
