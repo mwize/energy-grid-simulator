@@ -83,25 +83,7 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
             st.metric("Total Power", f"{total_kwh:.2f} kWh")
             st.divider()
 
-            # Initialize power history in session state
-            if "power_wind_sun_history" not in st.session_state:
-                st.session_state.power_wind_sun_history = []
-
-            # Add datapoint to historic data
-            weather = st.session_state.grid_simulator.weather_controller.get_weather_data(current_time)
-            st.session_state.power_wind_sun_history.append({
-                "Time": current_time,
-                "power": total_kwh,
-                "wind": weather["wind_intensity"],
-                "sun": weather["sun_intensity"]
-            })
-
-            # Limit history to 50 ticks
-            if len(st.session_state.power_wind_sun_history) > 50:
-                # Delete old data
-                st.session_state.power_wind_sun_history.pop(0)
-
-            df = pd.DataFrame(st.session_state.power_wind_sun_history).set_index("Time")
+            df = pd.DataFrame(st.session_state.grid_simulator.power_history).set_index("Time")
 
             # Chart 1: showing power output over time
             st.subheader("Power Output")

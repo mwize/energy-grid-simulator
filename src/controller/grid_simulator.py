@@ -8,6 +8,7 @@ class GridSimulator:
     def __init__(self, weather_controller: WeatherController, battery_controller: BatteryController):
         self.time_elapsed = 0
         self.grid_members = []
+        self.power_history = []
         self.weather_controller = weather_controller
         self.battery_controller = battery_controller
 
@@ -19,6 +20,17 @@ class GridSimulator:
         """Simulates one time step (one hour)."""
         balance = self.update_assets(self.time_elapsed, self.weather_controller.get_weather_data(self.time_elapsed))
         actual_diff = self.update_battery(balance)
+        weather = self.weather_controller.get_weather_data(self.time_elapsed)
+        self.power_history.append({
+            "Time": self.time_elapsed,
+            "power": balance,
+            "wind": weather["wind_intensity"],
+            "sun": weather["sun_intensity"]
+        })
+
+        if len(self.power_history) > 50:
+            self.power_history.pop(0)
+
         self.overload_check(actual_diff)
         
         self.time_elapsed += 1
