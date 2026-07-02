@@ -12,7 +12,7 @@ class Factory(Consumer):
 
     def consume(self, current_hour)  -> float:
         """Returns the consumption of the factory at a given hour based on the consumption profile."""
-        return self.consumption_profile[current_hour] * self.peak_power_demand 
+        return self.consumption_profile[current_hour % 24] * self.peak_power_demand 
 
 
 

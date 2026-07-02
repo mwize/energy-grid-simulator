@@ -3,10 +3,17 @@ import pandas as pd
 
 from functools import partial
 from assets.energy_asset import EnergyAsset
-from assets.household import HouseHold
 
+from assets.household import HouseHold
+from assets.charging_station import ChargingStation
+from assets.factory import Factory
+
+from assets.solarplant import SolarPlant
 from assets.powerplant import PowerPlant
 from assets.windturbine import WindTurbine
+
+from assets.smart_home import SmartHome
+
 from pages.asset_card import create_asset_card
 
 
@@ -44,6 +51,14 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
                 use_container_width=True,
                 on_click=partial(add_asset, PowerPlant),
             )
+            st.button(
+                "Solar",
+                icon=":material/solar_power:",
+                use_container_width=True,
+                on_click=partial(add_asset, SolarPlant),
+            )
+
+
             st.subheader("Consumer")
             st.button(
                 "Household",
@@ -51,16 +66,40 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
                 use_container_width=True,
                 on_click=partial(add_asset, HouseHold),
             )
+            st.button(
+                "Charging Station",
+                icon=":material/charger:",
+                use_container_width=True,
+                on_click=partial(add_asset, ChargingStation),
+            )
+            st.button(
+                "Factory",
+                icon=":material/charger:",
+                use_container_width=True,
+                on_click=partial(add_asset, Factory),
+            )
+
+
+            st.subheader("Other")
+            st.button(
+                "Smart Home",
+                icon=":material/charger:",
+                use_container_width=True,
+                on_click=partial(add_asset, SmartHome),
+            )
+            
 
 
     # Assets Menu
 
     with main_cols[1]:
-        header_cols = st.columns([3, 1], gap="small") # ratio: Header and time indicatorx
+        header_cols = st.columns([6, 1, 1], gap="small") # ratio: Header and time indicatorx
         with header_cols[0]:
             st.title("Assets")
         with header_cols[1]:
-            st.metric(label="Time", value=f"{current_time}")
+            st.metric(label="Time", value=f"{current_time%24}")
+        with header_cols[2]:
+            st.metric(label="Days", value=f"{current_time // 24}")
 
         with st.container(height=760, border=True):
             CARDS_PER_ROW = 3
