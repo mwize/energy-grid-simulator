@@ -23,7 +23,8 @@ class GridSimulator:
         weather = self.weather_controller.get_weather_data(self.time_elapsed)
         self.power_history.append({
             "Time": self.time_elapsed,
-            "power": balance,
+            "production": self.get_production_sum(self.time_elapsed, self.weather_controller.get_weather_data(self.time_elapsed)),
+            "consumption": self.get_consumption_sum(self.time_elapsed, self.weather_controller.get_weather_data(self.time_elapsed)),
             "wind": weather["wind_intensity"],
             "sun": weather["sun_intensity"]
         })
@@ -41,6 +42,24 @@ class GridSimulator:
         total = 0.0
         for asset in self.grid_members:
             total += asset.update(current_hour, weather_data)
+        return total
+
+    def get_production_sum(self, current_hour: int, weather_data: dict) -> float:
+        """Returns the sum of all positive (producing) asset outputs at the given hour."""
+        total = 0.0
+        for asset in self.grid_members:
+            value = asset.update(current_hour, weather_data)
+            if value > 0:
+                total += value
+        return total
+
+    def get_consumption_sum(self, current_hour: int, weather_data: dict) -> float:
+        """Returns the sum of all negative (consuming) asset outputs at the given hour."""
+        total = 0.0
+        for asset in self.grid_members:
+            value = asset.update(current_hour, weather_data)
+            if value < 0:
+                total += -value
         return total
 
     def update_battery(self, net_balance: float) -> float:
