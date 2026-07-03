@@ -93,11 +93,12 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
     # Assets Menu
 
     with main_cols[1]:
-        header_cols = st.columns([6, 1, 1], gap="small") # ratio: Header and time indicatorx
+        header_cols = st.columns([6, 2, 1], gap="small") # ratio: Header and time indicatorx
         with header_cols[0]:
             st.title("Assets")
         with header_cols[1]:
-            st.metric(label="Time", value=f"{current_time%24}")
+            time_string = f"{current_time%24:02d}:00"
+            st.metric(label="Time", value=f"{time_string}")
         with header_cols[2]:
             st.metric(label="Days", value=f"{current_time // 24}")
 
