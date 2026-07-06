@@ -1,3 +1,5 @@
+from assets.consumer import Consumer
+from assets.producer import Producer
 from controller.battery_controller import BatteryController
 from controller.weather_controller import WeatherController
 
@@ -26,7 +28,8 @@ class GridSimulator:
             "production": self.get_production_sum(self.time_elapsed, self.weather_controller.get_weather_data(self.time_elapsed)),
             "consumption": self.get_consumption_sum(self.time_elapsed, self.weather_controller.get_weather_data(self.time_elapsed)),
             "wind": weather["wind_intensity"],
-            "sun": weather["sun_intensity"]
+            "sun": weather["sun_intensity"],
+            "charge": (self.battery_controller.curr_kwh/ self.battery_controller.max_kwh)*100
         })
 
         if len(self.power_history) > 50:
@@ -70,7 +73,8 @@ class GridSimulator:
         """Checks whether the grid is currently overloaded and turns off all Assets if this is the case"""
         if bal < 0:
             for asset in self.grid_members:
-                asset.is_connected = False
+                if isinstance(asset, Consumer):
+                    asset.is_connected = False
 
     def remove_member(self, asset_id) -> None:
         """Removes an asset from the grid by its ID."""

@@ -1,5 +1,7 @@
 import math
 from abc import abstractmethod, ABC
+
+import pandas as pd
 import streamlit as st
 
 from assets.energy_asset import EnergyAsset
@@ -13,6 +15,7 @@ from assets.charging_station import ChargingStation
 from assets.factory import Factory
 
 from assets.smart_home import SmartHome
+from controller.battery_controller import BatteryController
 
 
 class AssetCard(ABC):
@@ -215,6 +218,7 @@ class ChargerCard(AssetCard):
         )
         st.text(f"Current Cars Charging: {self.charger_asset.cars_charging}")
 
+
 class FactoryCard(AssetCard):
     # Settings
     MAX_PRODUCTION_SLIDER_MAX = 20
@@ -272,6 +276,48 @@ class SmartHomeCard(AssetCard):
             value=int(self.smart_home_asset.solar_panel.max_capacity),
             key=self.capacity_key
         )
+
+class BatteryCard():
+    BATTERY_CAPACITY_SLIDER_MAX = 10000
+
+    def __init__(self, battery_controller: BatteryController):
+        self.battery_controller = battery_controller
+
+    def sync_state(self):
+        if "bat_slider" in st.session_state:  # update number of residents when slider changed
+
+            self.battery_controller.max_kwh = st.session_state["bat_slider"]
+
+    def render(self, weather_data, time):
+        self.sync_state()
+        main_border = st.container(border=True, height=440)
+        with main_border:
+            title_cols = st.columns([1, 1], gap="small")
+            kwh = self.battery_controller.curr_kwh
+
+            with title_cols[0]:
+                st.markdown(f"### 🔋 Battery")
+            with title_cols[1]:
+                st.metric("Charge", f"{int(kwh)} kW")
+
+            st.divider()
+
+            df = pd.DataFrame(st.session_state.grid_simulator.power_history).set_index("Time")
+
+            # Chart 1: showing power output over time
+            st.area_chart(df[["charge"]], color=["green"], height="stretch")
+
+            # capacity slider to change Production
+            st.slider(
+                "Capacity",
+                min_value=0, max_value=self.BATTERY_CAPACITY_SLIDER_MAX,
+                value=int(self.battery_controller.max_kwh),
+                key="bat_slider"
+            )
+
+
+
+
 
 
 

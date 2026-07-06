@@ -8,7 +8,7 @@ class WeatherController:
 
     # How much random noise is mixed into the sine curve (0 = none, 1 = a lot)
     SUN_NOISE = 0.35
-    WIND_NOISE = 0.50
+    WIND_NOISE = 0.85
 
     # How quickly the noise is allowed to change from hour to hour (smoothing)
     NOISE_SMOOTHING = 0.3
@@ -28,7 +28,7 @@ class WeatherController:
 
         # Base curve: sun follows a 24h day/night cycle, wind a slightly different rhythm
         sun_base = 0.5 + 0.5 * math.sin((2 * math.pi / 24) * current_hour - math.pi / 2)
-        wind_base = 0.5 + 0.3 * math.sin((2 * math.pi / 17) * current_hour)
+        wind_base = 0.5 + 0.3 * math.sin((2 * math.pi / 36) * current_hour)
 
         # Smoothly nudge the noise toward a new random value instead of jumping around
         self.sun_noise += self.NOISE_SMOOTHING * ((random.random() - 0.5) - self.sun_noise)
