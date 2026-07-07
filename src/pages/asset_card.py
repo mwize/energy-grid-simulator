@@ -245,7 +245,7 @@ class FactoryCard(AssetCard):
 class SmartHomeCard(AssetCard):
     # Settings
     MAX_RESIDENTS_SLIDER_MAX = 10
-    MAX_CAPACITY_SLIDER_MAX = 6
+    MAX_CAPACITY_SLIDER_MAX = 20
 
     def __init__(self, smart_home_asset: SmartHome):
         super().__init__("🏡", smart_home_asset)
@@ -271,7 +271,7 @@ class SmartHomeCard(AssetCard):
 
         # max capacity slider
         st.slider(
-            "Solar Panels / Resident",
+            "Solar Panel Capacity (kW)",
             min_value=0, max_value=self.MAX_CAPACITY_SLIDER_MAX,
             value=int(self.smart_home_asset.solar_panel.max_capacity),
             key=self.capacity_key

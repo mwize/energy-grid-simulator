@@ -14,7 +14,7 @@ class SmartHome(HouseHold):
 
     def produce(self, current_hour: int, weather_data: dict) -> float:
         """returns produced power based on the time of day and current weather situation"""
-        return (env.clamp((0.6*math.sin(math.pi/12 * current_hour - 2)+0.6), 0 , 1) ** 1.5) * weather_data["sun_intensity"] * self.max_capacity * self.efficiency * self.num_residents
+        return (env.clamp((0.6*math.sin(math.pi/12 * current_hour - 2)+0.6), 0 , 1) ** 1.5) * weather_data["sun_intensity"] * self.solar_panel.max_capacity * self.solar_panel.efficiency * self.num_residents
     
     def update(self, current_hour: int, weather_data: dict) -> float:
         """Returns net energy balance for the smart home"""
