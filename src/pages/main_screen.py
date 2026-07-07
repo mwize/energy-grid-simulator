@@ -14,8 +14,7 @@ from assets.windturbine import WindTurbine
 
 from assets.smart_home import SmartHome
 
-from pages.asset_card import create_asset_card
-
+from pages.asset_card import create_asset_card, BatteryCard
 
 
 def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict):
@@ -93,22 +92,23 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
     # Assets Menu
 
     with main_cols[1]:
-        header_cols = st.columns([6, 1, 1], gap="small") # ratio: Header and time indicatorx
+        header_cols = st.columns([6, 2, 1], gap="small") # ratio: Header and time indicatorx
         with header_cols[0]:
             st.title("Assets")
         with header_cols[1]:
-            st.metric(label="Time", value=f"{current_time%24}")
+            time_string = f"{current_time%24:02d}:00"
+            st.metric(label="Time", value=f"{time_string}")
         with header_cols[2]:
             st.metric(label="Days", value=f"{current_time // 24}")
 
         with st.container(height=760, border=True):
             CARDS_PER_ROW = 3
             grid_cols = st.columns(CARDS_PER_ROW)
-
             for index, asset in enumerate(assets):
                 col_index = index % CARDS_PER_ROW
                 with grid_cols[col_index]:
-                    card = create_asset_card(asset)
+                    card = create_asset_card(asset) if index != 0 else BatteryCard(st.session_state.grid_simulator.battery_controller)
+
                     card.render(weather_data=weather_data, time=current_time)
 
 
@@ -133,7 +133,7 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
 
             # Chart 1: showing power output over time
             st.subheader("Power Output")
-            st.line_chart(df[["power"]], color=["#2E86C1"], height=200)
+            st.line_chart(df[["production", "consumption"]], color=["green", "yellow"], height=200)
 
             # Chart 2: showing weather over time
             st.subheader("Weather")

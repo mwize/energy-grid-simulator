@@ -10,4 +10,4 @@ class WindTurbine(Producer):
 
     def produce(self, current_hour: int, weather_data: dict) -> float:
         """Returns produced power based on current 'season' (0.1*current_hour) and current weather situation """
-        return (0.2 * math.sin(0.1*current_hour) + 0.8) * weather_data["wind_intensity"] * self.efficiency
+        return (0.2 * math.sin(0.1*current_hour) + 0.8) * weather_data["wind_intensity"] * self.efficiency*self.max_capacity

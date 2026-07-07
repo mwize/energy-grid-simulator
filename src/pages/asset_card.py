@@ -1,5 +1,7 @@
 import math
 from abc import abstractmethod, ABC
+
+import pandas as pd
 import streamlit as st
 
 from assets.energy_asset import EnergyAsset
@@ -13,6 +15,7 @@ from assets.charging_station import ChargingStation
 from assets.factory import Factory
 
 from assets.smart_home import SmartHome
+from controller.battery_controller import BatteryController
 
 
 class AssetCard(ABC):
@@ -189,31 +192,32 @@ class ChargerCard(AssetCard):
         super().__init__("🔌", charger_asset)
 
         self.cap_key = f"cap_sld_{self.asset.asset_id}"  # Key for capacity slider
-        self.power_key = f"power_sld_{self.asset.asset_id}"  # Key for power slider
+        self.cars_key = f"cars_sld_{self.asset.asset_id}"  # Key for cars slider
         self.charger_asset = charger_asset
 
     def sync_state(self):
         if self.cap_key in st.session_state:  # update capacity when slider changed
-            self.charger_asset.max_capacity = st.session_state[self.cap_key]
-        if self.power_key in st.session_state:  # update power per car when slider changed
-            self.charger_asset.power_per_car = st.session_state[self.power_key]
+            self.charger_asset.peak_power_demand = st.session_state[self.cap_key]
+        if self.cars_key in st.session_state:  # update max cars charging
+            self.charger_asset.max_cars_charging = st.session_state[self.cars_key]
 
     def render_ui_elements(self, weather_data, time):
         # capacity slider to change Production
         st.slider(
             "Max Cars",
             min_value=0, max_value=self.MAX_CARS_SLIDER_MAX,
-            value=int(self.charger_asset.cars_charging),
-            key=self.cap_key
+            value=int(self.charger_asset.max_cars_charging),
+            key=self.cars_key
         )
 
         st.slider(
             "Power per Car (kW)",
             min_value=0, max_value=self.MAX_POWER_PER_CAR,
             value=int(self.charger_asset.peak_power_demand),
-            key=self.power_key
+            key=self.cap_key
         )
         st.text(f"Current Cars Charging: {self.charger_asset.cars_charging}")
+
 
 class FactoryCard(AssetCard):
     # Settings
@@ -241,7 +245,7 @@ class FactoryCard(AssetCard):
 class SmartHomeCard(AssetCard):
     # Settings
     MAX_RESIDENTS_SLIDER_MAX = 10
-    MAX_CAPACITY_SLIDER_MAX = 5.0
+    MAX_CAPACITY_SLIDER_MAX = 20
 
     def __init__(self, smart_home_asset: SmartHome):
         super().__init__("🏡", smart_home_asset)
@@ -254,7 +258,7 @@ class SmartHomeCard(AssetCard):
         if self.residents_key in st.session_state:  # update number of residents when slider changed
             self.smart_home_asset.num_residents = st.session_state[self.residents_key]
         if self.capacity_key in st.session_state:  # update max capacity when slider changed
-            self.smart_home_asset.max_capacity = st.session_state[self.capacity_key]
+            self.smart_home_asset.solar_panel.max_capacity = st.session_state[self.capacity_key]
 
     def render_ui_elements(self, weather_data, time):
         # number of residents slider
@@ -267,12 +271,53 @@ class SmartHomeCard(AssetCard):
 
         # max capacity slider
         st.slider(
-            "Max Solar Prod. / Resident (kW)",
-            min_value=0.0, max_value=self.MAX_CAPACITY_SLIDER_MAX,
-            value=float(self.smart_home_asset.max_capacity),
-            key=self.capacity_key,
-            step=0.1
+            "Solar Panel Capacity (kW)",
+            min_value=0, max_value=self.MAX_CAPACITY_SLIDER_MAX,
+            value=int(self.smart_home_asset.solar_panel.max_capacity),
+            key=self.capacity_key
         )
+
+class BatteryCard():
+    BATTERY_CAPACITY_SLIDER_MAX = 10000
+
+    def __init__(self, battery_controller: BatteryController):
+        self.battery_controller = battery_controller
+
+    def sync_state(self):
+        if "bat_slider" in st.session_state:  # update number of residents when slider changed
+
+            self.battery_controller.max_kwh = st.session_state["bat_slider"]
+
+    def render(self, weather_data, time):
+        self.sync_state()
+        main_border = st.container(border=True, height=440)
+        with main_border:
+            title_cols = st.columns([1, 1], gap="small")
+            kwh = self.battery_controller.curr_kwh
+
+            with title_cols[0]:
+                st.markdown(f"### 🔋 Battery")
+            with title_cols[1]:
+                st.metric("Charge", f"{int(kwh)} kW")
+
+            st.divider()
+
+            df = pd.DataFrame(st.session_state.grid_simulator.power_history).set_index("Time")
+
+            # Chart 1: showing power output over time
+            st.area_chart(df[["charge"]], color=["green"], height="stretch")
+
+            # capacity slider to change Production
+            st.slider(
+                "Capacity",
+                min_value=0, max_value=self.BATTERY_CAPACITY_SLIDER_MAX,
+                value=int(self.battery_controller.max_kwh),
+                key="bat_slider"
+            )
+
+
+
+
 
 
 
@@ -280,6 +325,8 @@ class SmartHomeCard(AssetCard):
 
 def create_asset_card(asset: EnergyAsset) -> AssetCard:
     """Returns UI card for specific EnergyAsset"""
+    if isinstance(asset, SmartHome):
+        return SmartHomeCard(asset)
     if isinstance(asset, SolarPlant):
         return SolarPlantCard(asset)
     elif isinstance(asset, PowerPlant):
@@ -292,7 +339,6 @@ def create_asset_card(asset: EnergyAsset) -> AssetCard:
         return ChargerCard(asset)
     elif isinstance(asset, Factory):
         return FactoryCard(asset)
-    elif isinstance(asset, SmartHome):
-        return SmartHomeCard(asset)
+    
     else:
         raise ValueError(f"No card defined for asset type {type(asset)}")

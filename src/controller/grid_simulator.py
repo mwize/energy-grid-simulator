@@ -1,3 +1,5 @@
+from assets.consumer import Consumer
+from assets.producer import Producer
 from controller.battery_controller import BatteryController
 from controller.weather_controller import WeatherController
 
@@ -23,9 +25,11 @@ class GridSimulator:
         weather = self.weather_controller.get_weather_data(self.time_elapsed)
         self.power_history.append({
             "Time": self.time_elapsed,
-            "power": balance,
+            "production": self.get_production_sum(self.time_elapsed, self.weather_controller.get_weather_data(self.time_elapsed)),
+            "consumption": self.get_consumption_sum(self.time_elapsed, self.weather_controller.get_weather_data(self.time_elapsed)),
             "wind": weather["wind_intensity"],
-            "sun": weather["sun_intensity"]
+            "sun": weather["sun_intensity"],
+            "charge": (self.battery_controller.curr_kwh/ self.battery_controller.max_kwh)*100
         })
 
         if len(self.power_history) > 50:
@@ -43,6 +47,24 @@ class GridSimulator:
             total += asset.update(current_hour, weather_data)
         return total
 
+    def get_production_sum(self, current_hour: int, weather_data: dict) -> float:
+        """Returns the sum of all positive (producing) asset outputs at the given hour."""
+        total = 0.0
+        for asset in self.grid_members:
+            value = asset.update(current_hour, weather_data)
+            if value > 0:
+                total += value
+        return total
+
+    def get_consumption_sum(self, current_hour: int, weather_data: dict) -> float:
+        """Returns the sum of all negative (consuming) asset outputs at the given hour."""
+        total = 0.0
+        for asset in self.grid_members:
+            value = asset.update(current_hour, weather_data)
+            if value < 0:
+                total += -value
+        return total
+
     def update_battery(self, net_balance: float) -> float:
         """Stores surplus or covers a deficit via the battery."""
         return self.battery_controller.store(net_balance)
@@ -51,7 +73,8 @@ class GridSimulator:
         """Checks whether the grid is currently overloaded and turns off all Assets if this is the case"""
         if bal < 0:
             for asset in self.grid_members:
-                asset.is_connected = False
+                if isinstance(asset, Consumer):
+                    asset.is_connected = False
 
     def remove_member(self, asset_id) -> None:
         """Removes an asset from the grid by its ID."""
