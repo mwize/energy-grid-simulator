@@ -22,9 +22,9 @@ def live_dashboard():
     )
 
 def main():
+    st.set_page_config(layout="wide")
     if "grid_simulator" not in st.session_state:
         st.session_state.grid_simulator = GridSimulator(WeatherController(), BatteryController())
-    st.set_page_config(layout="wide")
     inject_custom_css()
     if not st.session_state.grid_simulator.grid_members:
         st.session_state.grid_simulator.add_member(SolarPlant())

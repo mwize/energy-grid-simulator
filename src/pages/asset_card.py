@@ -192,29 +192,29 @@ class ChargerCard(AssetCard):
         super().__init__("🔌", charger_asset)
 
         self.cap_key = f"cap_sld_{self.asset.asset_id}"  # Key for capacity slider
-        self.power_key = f"power_sld_{self.asset.asset_id}"  # Key for power slider
+        self.cars_key = f"cars_sld_{self.asset.asset_id}"  # Key for cars slider
         self.charger_asset = charger_asset
 
     def sync_state(self):
         if self.cap_key in st.session_state:  # update capacity when slider changed
-            self.charger_asset.max_capacity = st.session_state[self.cap_key]
-        if self.power_key in st.session_state:  # update power per car when slider changed
-            self.charger_asset.power_per_car = st.session_state[self.power_key]
+            self.charger_asset.peak_power_demand = st.session_state[self.cap_key]
+        if self.cars_key in st.session_state:  # update max cars charging
+            self.charger_asset.max_cars_charging = st.session_state[self.cars_key]
 
     def render_ui_elements(self, weather_data, time):
         # capacity slider to change Production
         st.slider(
             "Max Cars",
             min_value=0, max_value=self.MAX_CARS_SLIDER_MAX,
-            value=int(self.charger_asset.cars_charging),
-            key=self.cap_key
+            value=int(self.charger_asset.max_cars_charging),
+            key=self.cars_key
         )
 
         st.slider(
             "Power per Car (kW)",
             min_value=0, max_value=self.MAX_POWER_PER_CAR,
             value=int(self.charger_asset.peak_power_demand),
-            key=self.power_key
+            key=self.cap_key
         )
         st.text(f"Current Cars Charging: {self.charger_asset.cars_charging}")
 
@@ -258,7 +258,7 @@ class SmartHomeCard(AssetCard):
         if self.residents_key in st.session_state:  # update number of residents when slider changed
             self.smart_home_asset.num_residents = st.session_state[self.residents_key]
         if self.capacity_key in st.session_state:  # update max capacity when slider changed
-            self.smart_home_asset.max_capacity = st.session_state[self.capacity_key]
+            self.smart_home_asset.solar_panel.max_capacity = st.session_state[self.capacity_key]
 
     def render_ui_elements(self, weather_data, time):
         # number of residents slider
