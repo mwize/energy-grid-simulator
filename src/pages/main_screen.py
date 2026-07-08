@@ -139,7 +139,7 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
                 if a.is_connected:
                     total_kwh += a.update(current_time, weather_data)
 
-            st.metric("Current Power", f"{total_kwh:.2f} kW")
+            st.metric("Current Net-Power", f"{total_kwh:.2f} kW")
             st.divider()
 
             df = pd.DataFrame(st.session_state.grid_simulator.power_history).set_index("Time")
