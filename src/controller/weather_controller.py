@@ -1,6 +1,6 @@
 import random
 import math
-import env as env
+import src.utils as utils
 
 
 class WeatherController:
@@ -34,8 +34,8 @@ class WeatherController:
         self.sun_noise += self.NOISE_SMOOTHING * ((random.random() - 0.5) - self.sun_noise)
         self.wind_noise += self.NOISE_SMOOTHING * ((random.random() - 0.5) - self.wind_noise)
 
-        sun_intensity = env.clamp(sun_base + self.sun_noise * self.SUN_NOISE, 0, 1)
-        wind_intensity = env.clamp(wind_base + self.wind_noise * self.WIND_NOISE, 0, 1)
+        sun_intensity = utils.clamp(sun_base + self.sun_noise * self.SUN_NOISE, 0, 1)
+        wind_intensity = utils.clamp(wind_base + self.wind_noise * self.WIND_NOISE, 0, 1)
 
         result = {"sun_intensity": sun_intensity, "wind_intensity": wind_intensity}
         self.weather_data[current_hour] = result

@@ -6,12 +6,11 @@ from assets.energy_asset import EnergyAsset
 class Consumer(EnergyAsset, ABC):
     """Parent class for all power consumers"""
 
-    def __init__(self, name: str, peak_power_demand: float, consumption_profile: list[float], priority: int, asset_id: int):
-        """Initializes a consumer with a name, peak power demand, consumption profile, priority, and asset ID."""
+    def __init__(self, name: str, peak_power_demand: float, consumption_profile: list[float], asset_id: int):
+        """Initializes a consumer with a name, peak power demand, consumption profile, and asset ID."""
         super().__init__(name = name, asset_id=asset_id)
         self.peak_power_demand = peak_power_demand
         self.consumption_profile = consumption_profile
-        self.priority = priority
 
     def update(self, current_hour: int, weather_data: dict) -> float:
         """Returns current power consumption"""
