@@ -1,7 +1,7 @@
 from assets.household import HouseHold
 from assets.solarplant import SolarPlant
 
-import src.utils as utils
+import utils as utils
 import math
 
 

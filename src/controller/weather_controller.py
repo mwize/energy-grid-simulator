@@ -1,6 +1,6 @@
 import random
 import math
-import src.utils as utils
+import utils as utils
 
 
 class WeatherController:
