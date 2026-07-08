@@ -39,7 +39,7 @@ class AssetCard(ABC):
             with title_cols[0]:
                 st.markdown(f"### {self.icon} {self.title}")
             with title_cols[1]:
-                st.metric("Demand" if kwh < 0 else "Generating", f"{(kwh**2)**(1/2):.2f} kwh")
+                st.metric("Demand" if kwh < 0 else "Generating", f"{(kwh**2)**(1/2):.2f} kW")
 
             st.divider()
 
@@ -298,7 +298,7 @@ class BatteryCard():
             with title_cols[0]:
                 st.markdown(f"### 🔋 Battery")
             with title_cols[1]:
-                st.metric("Charge", f"{int(kwh)} kW")
+                st.metric("Charge", f"{int(kwh)} kWh")
 
             st.divider()
 
