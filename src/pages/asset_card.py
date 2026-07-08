@@ -1,5 +1,7 @@
 import math
 from abc import abstractmethod, ABC
+from typing import Callable
+from uuid import UUID
 
 import pandas as pd
 import streamlit as st
@@ -19,13 +21,11 @@ from controller.battery_controller import BatteryController
 
 
 class AssetCard(ABC):
-    def __init__(self, icon: str, asset: EnergyAsset):
+    def __init__(self, icon: str, asset: EnergyAsset, on_remove: Callable[[UUID], None]):
         self.title = asset.name
         self.icon = icon
         self.asset = asset
-
-    def remove_asset(self):
-        st.session_state.grid_simulator.remove_member(self.asset.asset_id)
+        self.on_remove = on_remove
 
     def render(self, weather_data, time):
         self.sync_state()
@@ -52,7 +52,7 @@ class AssetCard(ABC):
                 btn_label = "🔴 Disconnect" if self.asset.is_connected else "🟢 Connect"
                 st.button(btn_label, use_container_width=True, key=f"con_btn_{self.asset.asset_id}", on_click=self.asset.toggle_connect)
             with button_cols[1]:
-                st.button("🗑️", use_container_width=True, key=f"rmv_btn_{self.asset.asset_id}", on_click=self.remove_asset)
+                st.button("🗑️", use_container_width=True, key=f"rmv_btn_{self.asset.asset_id}", on_click=self.on_remove, args=(self.asset.asset_id,))
 
     @abstractmethod
     def sync_state(self):
@@ -70,8 +70,8 @@ class SolarPlantCard(AssetCard):
     SOLAR_SLIDER_MAX = 16.0
 
 
-    def __init__(self, solar_asset: SolarPlant):
-        super().__init__("☀️", solar_asset)
+    def __init__(self, solar_asset: SolarPlant, on_remove: Callable[[UUID], None]):
+        super().__init__("☀️", solar_asset, on_remove)
 
         self.cap_key = f"cap_sld_{self.asset.asset_id}" # Key for capacity slider
         self.solar_asset = solar_asset
@@ -95,8 +95,8 @@ class PowerPlantCard(AssetCard):
     # Settings
     PP_CAPACITY_SLIDER_MAX = 40.0
 
-    def __init__(self, power_asset: PowerPlant):
-        super().__init__("⚡", power_asset)
+    def __init__(self, power_asset: PowerPlant, on_remove: Callable[[UUID], None]):
+        super().__init__("⚡", power_asset, on_remove)
         self.eff_key = f"eff_sld_{self.asset.asset_id}" # Key for efficiency slider
         self.cap_key = f"cap_sld_{self.asset.asset_id}" # Key for capacity slider
 
@@ -131,8 +131,8 @@ class WindTurbineCard(AssetCard):
     # Settings
     WIND_SLIDER_MAX = 15.0
 
-    def __init__(self, wind_asset: WindTurbine):
-        super().__init__("💨", wind_asset)
+    def __init__(self, wind_asset: WindTurbine, on_remove: Callable[[UUID], None]):
+        super().__init__("💨", wind_asset, on_remove)
 
         self.cap_key = f"cap_sld_{self.asset.asset_id}"  # Key for capacity slider
         self.wind_asset = wind_asset
@@ -155,8 +155,8 @@ class HouseHoldCard(AssetCard):
     PER_PERSON_POWER_MAX = 8.0
     NUM_RESIDENTS_MAX = 10
 
-    def __init__(self, house_asset: HouseHold):
-        super().__init__("🏠", house_asset)
+    def __init__(self, house_asset: HouseHold, on_remove: Callable[[UUID], None]):
+        super().__init__("🏠", house_asset, on_remove)
 
         self.pd_key = f"pd_key_{self.asset.asset_id}"  # Key for capacity slider
         self.nr_key = f"nr_key_{self.asset.asset_id}"  # Key for capacity slider
@@ -190,8 +190,8 @@ class ChargerCard(AssetCard):
     MAX_CARS_SLIDER_MAX = 8
     MAX_POWER_PER_CAR = 6.0  # kW
 
-    def __init__(self, charger_asset: ChargingStation):
-        super().__init__("🔌", charger_asset)
+    def __init__(self, charger_asset: ChargingStation, on_remove: Callable[[UUID], None]):
+        super().__init__("🔌", charger_asset, on_remove)
 
         self.cap_key = f"cap_sld_{self.asset.asset_id}"  # Key for capacity slider
         self.cars_key = f"cars_sld_{self.asset.asset_id}"  # Key for cars slider
@@ -225,8 +225,8 @@ class FactoryCard(AssetCard):
     # Settings
     MAX_PRODUCTION_SLIDER_MAX = 20.0
 
-    def __init__(self, factory_asset: Factory):
-        super().__init__("🏭", factory_asset)
+    def __init__(self, factory_asset: Factory, on_remove: Callable[[UUID], None]):
+        super().__init__("🏭", factory_asset, on_remove)
 
         self.prod_key = f"prod_sld_{self.asset.asset_id}"  # Key for production slider
         self.factory_asset = factory_asset
@@ -250,8 +250,8 @@ class SmartHomeCard(AssetCard):
     MAX_RESIDENTS_SLIDER_MAX = 8
     MAX_CAPACITY_SLIDER_MAX = 20.0
 
-    def __init__(self, smart_home_asset: SmartHome):
-        super().__init__("🧠🏠", smart_home_asset)
+    def __init__(self, smart_home_asset: SmartHome, on_remove: Callable[[UUID], None]):
+        super().__init__("🧠🏠", smart_home_asset, on_remove)
 
         self.residents_key = f"res_sld_{self.asset.asset_id}"  # Key for number of residents slider
         self.capacity_key = f"cap_sld_{self.asset.asset_id}"  # Key for capacity slider
@@ -320,29 +320,22 @@ class BatteryCard():
             )
 
 
-
-
-
-
-
-
-
-def create_asset_card(asset: EnergyAsset) -> AssetCard:
+def create_asset_card(asset: EnergyAsset, on_remove: Callable[[UUID], None]) -> AssetCard:
     """Returns UI card for specific EnergyAsset"""
     if isinstance(asset, SmartHome):
-        return SmartHomeCard(asset)
+        return SmartHomeCard(asset, on_remove)
     if isinstance(asset, SolarPlant):
-        return SolarPlantCard(asset)
+        return SolarPlantCard(asset, on_remove)
     elif isinstance(asset, PowerPlant):
-        return PowerPlantCard(asset)
+        return PowerPlantCard(asset, on_remove)
     elif isinstance(asset, WindTurbine):
-        return WindTurbineCard(asset)
+        return WindTurbineCard(asset, on_remove)
     elif isinstance(asset, HouseHold):
-        return HouseHoldCard(asset)
+        return HouseHoldCard(asset, on_remove)
     elif isinstance(asset, ChargingStation):
-        return ChargerCard(asset)
+        return ChargerCard(asset, on_remove)
     elif isinstance(asset, Factory):
-        return FactoryCard(asset)
+        return FactoryCard(asset, on_remove)
     
     else:
         raise ValueError(f"No card defined for asset type {type(asset)}")
