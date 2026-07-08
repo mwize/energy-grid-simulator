@@ -35,7 +35,8 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
         st.session_state.grid_simulator.add_member(new_asset)
 
     with main_cols[0]:
-        st.title("Build Menu")
+        with st.container(height=110, border=False):    
+            st.title("Build Menu")
         with st.container(height=760, border=True):
             st.subheader("Producer")
             st.button(
@@ -92,14 +93,15 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
     # Assets Menu
 
     with main_cols[1]:
-        header_cols = st.columns([6, 2, 1], gap="small") # ratio: Header and time indicatorx
-        with header_cols[0]:
-            st.title("Assets")
-        with header_cols[1]:
-            time_string = f"{current_time%24:02d}:00"
-            st.metric(label="Time", value=f"{time_string}")
-        with header_cols[2]:
-            st.metric(label="Days", value=f"{current_time // 24}")
+        with st.container(height=110, border=False):
+            header_cols = st.columns([6, 2, 1], gap="small") # ratio: Header and time indicatorx
+            with header_cols[0]:
+                st.title("Assets")
+            with header_cols[1]:
+                time_string = f"{current_time%24:02d}:00"
+                st.metric(label="Time", value=f"{time_string}")
+            with header_cols[2]:
+                st.metric(label="Days", value=f"{current_time // 24}")
 
         with st.container(height=760, border=True):
             CARDS_PER_ROW = 3
@@ -125,7 +127,8 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
     # STATISTICS
 
     with main_cols[2]:
-        st.title("Statistics")
+        with st.container(height=110, border=False):
+            st.title("Statistics")
         with st.container(height=760, border=True):
 
             # Total production calculation and visualization
