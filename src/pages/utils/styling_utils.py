@@ -9,7 +9,7 @@ def inject_custom_css():
             flex-direction: column !important;
         }
 
-        div[data-testid="stVerticalBlock"][height="440px"] > div:last-child {
+        div[data-testid="stVerticalBlock"][height="445px"] > div:last-child {
             margin-top: auto !important;
         }
         </style>
