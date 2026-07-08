@@ -73,7 +73,7 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
             )
             st.button(
                 "Factory",
-                icon=":material/charger:",
+                icon=":material/factory:",
                 use_container_width=True,
                 on_click=partial(add_asset, Factory),
             )
@@ -82,7 +82,7 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
             st.subheader("Other")
             st.button(
                 "Smart Home",
-                icon=":material/charger:",
+                icon=":material/home_health:",
                 use_container_width=True,
                 on_click=partial(add_asset, SmartHome),
             )
