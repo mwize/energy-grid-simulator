@@ -5,7 +5,7 @@ import random
 class ChargingStation(Consumer):
     """Charging station for electric vehicles. Consumes electricity based on a random consumption profile."""
 
-    def __init__(self, asset_id: int = None, priority: int = 0, name: str = "EV Cahrging Station", peak_power_demand: float = 3, max_cars_charging: int = 4):
+    def __init__(self, asset_id: int = None, priority: int = 0, name: str = "EV Charger", peak_power_demand: float = 3, max_cars_charging: int = 4):
         self.cars_charging = 0
         self.max_cars_charging = max_cars_charging
         """initializes a charging station with a peak power demand of 2.5 kW."""

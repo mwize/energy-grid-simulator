@@ -30,7 +30,7 @@ class AssetCard(ABC):
     def render(self, weather_data, time):
         self.sync_state()
 
-        main_border = st.container(border=True, height=440)
+        main_border = st.container(border=True, height=445)
 
         with main_border:
             title_cols = st.columns([1, 1], gap="small")
@@ -44,7 +44,7 @@ class AssetCard(ABC):
             st.divider()
 
             # Render UI elements of specific Asset card
-            self.render_ui_elements(weather_data, time)
+            self.render_ui_elements()
 
 
             button_cols = st.columns([4, 1], gap="small")
@@ -59,7 +59,7 @@ class AssetCard(ABC):
         pass
 
     @abstractmethod
-    def render_ui_elements(self, weather_data, time):
+    def render_ui_elements(self):
         pass
 
 
@@ -67,7 +67,7 @@ class AssetCard(ABC):
 # Asset Card for SolarPlant
 class SolarPlantCard(AssetCard):
     # Settings
-    SOLAR_SLIDER_MAX = 20
+    SOLAR_SLIDER_MAX = 16.0
 
 
     def __init__(self, solar_asset: SolarPlant):
@@ -80,22 +80,23 @@ class SolarPlantCard(AssetCard):
         if self.cap_key in st.session_state: # update capacity when slider changed
             self.solar_asset.max_capacity = st.session_state[self.cap_key]
 
-    def render_ui_elements(self, weather_data, time):
+    def render_ui_elements(self):
         # capacity slider to change Production
         st.slider(
-            "Capacity",
-            min_value=0, max_value=self.SOLAR_SLIDER_MAX,
-            value=int(self.solar_asset.max_capacity),
-            key=self.cap_key
+            "Base-Max-Capacity",
+            min_value=0.0, max_value=self.SOLAR_SLIDER_MAX,
+            value=float(self.solar_asset.max_capacity),
+            key=self.cap_key,
+            step=0.05
         )
 
 # Asset Card for Power PowerPlant
 class PowerPlantCard(AssetCard):
     # Settings
-    PP_CAPACITY_SLIDER_MAX = 40
+    PP_CAPACITY_SLIDER_MAX = 40.0
 
     def __init__(self, power_asset: PowerPlant):
-        super().__init__("🏭", power_asset)
+        super().__init__("⚡", power_asset)
         self.eff_key = f"eff_sld_{self.asset.asset_id}" # Key for efficiency slider
         self.cap_key = f"cap_sld_{self.asset.asset_id}" # Key for capacity slider
 
@@ -108,18 +109,18 @@ class PowerPlantCard(AssetCard):
         if self.cap_key in st.session_state:
             self.power_asset.max_capacity = st.session_state[self.cap_key]
 
-    def render_ui_elements(self, weather_data, time):
+    def render_ui_elements(self):
         # capacity and efficiency sliders
         st.slider(
-            "Capacity",
-            min_value=0, max_value=self.PP_CAPACITY_SLIDER_MAX,
-            value=int(self.power_asset.max_capacity),
+            "Base-Max-Capacity",
+            min_value=0.0, max_value=self.PP_CAPACITY_SLIDER_MAX,
+            value=float(self.power_asset.max_capacity),
             key=self.cap_key,
-            step=1
+            step=0.05
         )
 
         st.slider(
-            "Efficiency (%)",
+            "Throttle (%)",
             min_value=0, max_value=100,
             value=int(self.power_asset.efficiency*100),
             key=self.eff_key
@@ -128,7 +129,7 @@ class PowerPlantCard(AssetCard):
 # Asset Card for WindTurbine
 class WindTurbineCard(AssetCard):
     # Settings
-    WIND_SLIDER_MAX = 100
+    WIND_SLIDER_MAX = 15.0
 
     def __init__(self, wind_asset: WindTurbine):
         super().__init__("💨", wind_asset)
@@ -140,18 +141,18 @@ class WindTurbineCard(AssetCard):
         if self.cap_key in st.session_state:  # update capacity when slider changed
             self.wind_asset.max_capacity = st.session_state[self.cap_key]
 
-    def render_ui_elements(self, weather_data, time):
+    def render_ui_elements(self):
         # capacity slider to change Production
         st.slider(
-            "Capacity",
-            min_value=0, max_value=self.WIND_SLIDER_MAX,
-            value=int(self.wind_asset.max_capacity),
+            "Max-Base-Capacity",
+            min_value=0.0, max_value=self.WIND_SLIDER_MAX,
+            value=float(self.wind_asset.max_capacity),
             key=self.cap_key
         )
 
 class HouseHoldCard(AssetCard):
     # Settings
-    PER_PERSON_POWER_MAX = 8
+    PER_PERSON_POWER_MAX = 8.0
     NUM_RESIDENTS_MAX = 10
 
     def __init__(self, house_asset: HouseHold):
@@ -167,26 +168,27 @@ class HouseHoldCard(AssetCard):
         if self.nr_key in st.session_state:  # update capacity when slider changed
             self.house_asset.num_residents = st.session_state[self.nr_key]
 
-    def render_ui_elements(self, weather_data, time):
+    def render_ui_elements(self):
         # Power Demand slider to change Production
         st.slider(
             "Base-Demand per Person",
-            min_value=0, max_value=self.PER_PERSON_POWER_MAX,
-            value=int(self.house_asset.personal_demand),
-            key=self.pd_key
+            min_value=0.0, max_value=self.PER_PERSON_POWER_MAX,
+            value=float(self.house_asset.personal_demand),
+            key=self.pd_key,
+            step=0.05
         )
 
         st.slider(
             "Number of Residents",
-            min_value=1, max_value=self.NUM_RESIDENTS_MAX,
+            min_value=0, max_value=self.NUM_RESIDENTS_MAX,
             value=int(self.house_asset.num_residents),
             key=self.nr_key
         )
 
 class ChargerCard(AssetCard):
     # Settings
-    MAX_CARS_SLIDER_MAX = 4
-    MAX_POWER_PER_CAR = 6  # kW
+    MAX_CARS_SLIDER_MAX = 8
+    MAX_POWER_PER_CAR = 6.0  # kW
 
     def __init__(self, charger_asset: ChargingStation):
         super().__init__("🔌", charger_asset)
@@ -201,10 +203,10 @@ class ChargerCard(AssetCard):
         if self.cars_key in st.session_state:  # update max cars charging
             self.charger_asset.max_cars_charging = st.session_state[self.cars_key]
 
-    def render_ui_elements(self, weather_data, time):
+    def render_ui_elements(self):
         # capacity slider to change Production
         st.slider(
-            "Max Cars",
+            "Max Cars Amount",
             min_value=0, max_value=self.MAX_CARS_SLIDER_MAX,
             value=int(self.charger_asset.max_cars_charging),
             key=self.cars_key
@@ -212,8 +214,8 @@ class ChargerCard(AssetCard):
 
         st.slider(
             "Power per Car (kW)",
-            min_value=0, max_value=self.MAX_POWER_PER_CAR,
-            value=int(self.charger_asset.peak_power_demand),
+            min_value=0.0, max_value=self.MAX_POWER_PER_CAR,
+            value=float(self.charger_asset.peak_power_demand),
             key=self.cap_key
         )
         st.text(f"Current Cars Charging: {self.charger_asset.cars_charging}")
@@ -221,7 +223,7 @@ class ChargerCard(AssetCard):
 
 class FactoryCard(AssetCard):
     # Settings
-    MAX_PRODUCTION_SLIDER_MAX = 20
+    MAX_PRODUCTION_SLIDER_MAX = 20.0
 
     def __init__(self, factory_asset: Factory):
         super().__init__("🏭", factory_asset)
@@ -233,22 +235,23 @@ class FactoryCard(AssetCard):
         if self.prod_key in st.session_state:  # update production when slider changed
             self.factory_asset.peak_power_demand = st.session_state[self.prod_key]
 
-    def render_ui_elements(self, weather_data, time):
+    def render_ui_elements(self):
         # production slider to change Production
         st.slider(
-            "Production Rate",
-            min_value=0, max_value=self.MAX_PRODUCTION_SLIDER_MAX,
-            value=int(self.factory_asset.peak_power_demand),
-            key=self.prod_key
+            "Conveyor Belt Speed (kW)",
+            min_value=0.0, max_value=self.MAX_PRODUCTION_SLIDER_MAX,
+            value=float(self.factory_asset.peak_power_demand),
+            key=self.prod_key,
+            step=0.05
         )
 
 class SmartHomeCard(AssetCard):
     # Settings
-    MAX_RESIDENTS_SLIDER_MAX = 10
-    MAX_CAPACITY_SLIDER_MAX = 20
+    MAX_RESIDENTS_SLIDER_MAX = 8
+    MAX_CAPACITY_SLIDER_MAX = 20.0
 
     def __init__(self, smart_home_asset: SmartHome):
-        super().__init__("🏡", smart_home_asset)
+        super().__init__("🏬", smart_home_asset)
 
         self.residents_key = f"res_sld_{self.asset.asset_id}"  # Key for number of residents slider
         self.capacity_key = f"cap_sld_{self.asset.asset_id}"  # Key for capacity slider
@@ -260,21 +263,22 @@ class SmartHomeCard(AssetCard):
         if self.capacity_key in st.session_state:  # update max capacity when slider changed
             self.smart_home_asset.solar_panel.max_capacity = st.session_state[self.capacity_key]
 
-    def render_ui_elements(self, weather_data, time):
+    def render_ui_elements(self):
         # number of residents slider
         st.slider(
             "Number of Residents",
-            min_value=1, max_value=self.MAX_RESIDENTS_SLIDER_MAX,
+            min_value=0, max_value=self.MAX_RESIDENTS_SLIDER_MAX,
             value=int(self.smart_home_asset.num_residents),
             key=self.residents_key
         )
 
         # max capacity slider
         st.slider(
-            "Solar Panel Capacity (kW)",
-            min_value=0, max_value=self.MAX_CAPACITY_SLIDER_MAX,
-            value=int(self.smart_home_asset.solar_panel.max_capacity),
-            key=self.capacity_key
+            "Solar Panel Base-Capacity (kW)",
+            min_value=0.0, max_value=self.MAX_CAPACITY_SLIDER_MAX,
+            value=float(self.smart_home_asset.solar_panel.max_capacity),
+            key=self.capacity_key,
+            step=0.05
         )
 
 class BatteryCard():
@@ -290,7 +294,7 @@ class BatteryCard():
 
     def render(self, weather_data, time):
         self.sync_state()
-        main_border = st.container(border=True, height=440)
+        main_border = st.container(border=True, height=445)
         with main_border:
             title_cols = st.columns([1, 1], gap="small")
             kwh = self.battery_controller.curr_kwh
@@ -309,7 +313,7 @@ class BatteryCard():
 
             # capacity slider to change Production
             st.slider(
-                "Capacity",
+                "Capacity (kWh)",
                 min_value=0, max_value=self.BATTERY_CAPACITY_SLIDER_MAX,
                 value=int(self.battery_controller.max_kwh),
                 key="bat_slider"
