@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
+from typing import Type
+from uuid import UUID
 
-from functools import partial
 from assets.energy_asset import EnergyAsset
 
 from assets.household import HouseHold
@@ -26,13 +27,14 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
 
 
     # BUILD MENU
-
-
-
-    def add_asset(asset_class, *args):
+    def add_asset(asset_class: Type[EnergyAsset]):
         """Callback: creates a new asset and adds it to the grid simulator."""
-        new_asset = asset_class(*args)
+        new_asset = asset_class()
         st.session_state.grid_simulator.add_member(new_asset)
+
+    def remove_asset(asset_id: UUID):
+        """Callback: removes an asset from the grid simulator."""
+        st.session_state.grid_simulator.remove_member(asset_id)
 
     with main_cols[0]:
         with st.container(height=110, border=False):    
@@ -43,19 +45,22 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
                 "Wind Turbine",
                 icon=":material/wind_power:",
                 use_container_width=True,
-                on_click=partial(add_asset, WindTurbine),
+                on_click=add_asset, 
+                args=(WindTurbine,),
             )
             st.button(
                 "Power Plant",
                 icon=":material/bolt:",
                 use_container_width=True,
-                on_click=partial(add_asset, PowerPlant),
+                on_click=add_asset, 
+                args=(PowerPlant,),
             )
             st.button(
                 "Solar",
                 icon=":material/solar_power:",
                 use_container_width=True,
-                on_click=partial(add_asset, SolarPlant),
+                on_click=add_asset, 
+                args=(SolarPlant,),
             )
 
 
@@ -64,19 +69,22 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
                 "Household",
                 icon=":material/house:",
                 use_container_width=True,
-                on_click=partial(add_asset, HouseHold),
+                on_click=add_asset, 
+                args=(HouseHold,),
             )
             st.button(
                 "Charging Station",
                 icon=":material/charger:",
                 use_container_width=True,
-                on_click=partial(add_asset, ChargingStation),
+                on_click=add_asset, 
+                args=(ChargingStation,),
             )
             st.button(
                 "Factory",
                 icon=":material/factory:",
                 use_container_width=True,
-                on_click=partial(add_asset, Factory),
+                on_click=add_asset, 
+                args=(Factory,),
             )
 
 
@@ -85,7 +93,8 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
                 "Smart Home",
                 icon=":material/home_health:",
                 use_container_width=True,
-                on_click=partial(add_asset, SmartHome),
+                on_click=add_asset, 
+                args=(SmartHome,),
             )
             
 
@@ -118,7 +127,7 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
             for asset in assets:
                 col_index = index % CARDS_PER_ROW
                 with grid_cols[col_index]:
-                    card = create_asset_card(asset)
+                    card = create_asset_card(asset, on_remove=remove_asset)
                     card.render(weather_data=weather_data, time=current_time)
 
                 index += 1
@@ -139,7 +148,7 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
                 if a.is_connected:
                     total_kwh += a.update(current_time, weather_data)
 
-            st.metric("Total Power", f"{total_kwh:.2f} kW")
+            st.metric("Current Net-Power", f"{total_kwh:.2f} kW")
             st.divider()
 
             df = pd.DataFrame(st.session_state.grid_simulator.power_history).set_index("Time")

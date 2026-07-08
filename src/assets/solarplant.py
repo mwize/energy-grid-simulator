@@ -5,9 +5,9 @@ import math
 class SolarPlant(Producer):
     """Produces energy when the sun is shining (based on time of day and weather conditions)"""
 
-    def __init__(self, max_capacity: float = 8.0 , asset_id: int = None, name: str = "Solar Panel"):
+    def __init__(self, max_capacity: float = 8.0, name: str = "Solar Panel"):
         """Initializer for SolarPanel. max_capacity asset_id and name is optional"""
-        super().__init__(name=name, max_capacity=max_capacity, efficiency=1, asset_id=asset_id)
+        super().__init__(name=name, max_capacity=max_capacity, efficiency=1)
 
     def produce(self, current_hour: int, weather_data: dict) -> float:
         """returns produced power based on the time of day and current weather situation"""
