@@ -7,7 +7,7 @@ class WeatherController:
     """Generates weather data based on simple sine curves with a bit of random noise."""
 
     # How much random noise is mixed into the sine curve (0 = none, 1 = a lot)
-    SUN_NOISE = 0.35
+    SUN_NOISE = 0.5
     WIND_NOISE = 0.85
 
     # How quickly the noise is allowed to change from hour to hour (smoothing)

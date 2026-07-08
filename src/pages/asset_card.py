@@ -251,7 +251,7 @@ class SmartHomeCard(AssetCard):
     MAX_CAPACITY_SLIDER_MAX = 20.0
 
     def __init__(self, smart_home_asset: SmartHome):
-        super().__init__("🏬", smart_home_asset)
+        super().__init__("🧠🏠", smart_home_asset)
 
         self.residents_key = f"res_sld_{self.asset.asset_id}"  # Key for number of residents slider
         self.capacity_key = f"cap_sld_{self.asset.asset_id}"  # Key for capacity slider
