@@ -139,7 +139,7 @@ class PowerPlantCard(AssetCard):
 # Asset Card for WindTurbine
 class WindTurbineCard(AssetCard):
     # Settings
-    WIND_SLIDER_MAX = 15.0
+    WIND_SLIDER_MAX = 10.0
 
     def __init__(self, wind_asset: WindTurbine, on_remove: Callable[[UUID], None]):
         super().__init__("💨", wind_asset, on_remove)
@@ -152,7 +152,6 @@ class WindTurbineCard(AssetCard):
             self.wind_asset.max_capacity = st.session_state[self.cap_key]
 
     def render_ui_elements(self):
-
         # Slider to change Max capacity of windturbine
         st.slider(
             "Max-Base-Capacity",
@@ -182,6 +181,13 @@ class HouseHoldCard(AssetCard):
     def render_ui_elements(self):
         # Slider to change personal demand
         st.slider(
+            "Number of Residents",
+            min_value=0, max_value=self.NUM_RESIDENTS_MAX,
+            value=int(self.house_asset.num_residents),
+            key=self.nr_key
+        )
+
+        st.slider(
             "Base-Demand per Person",
             min_value=0.0, max_value=self.PER_PERSON_POWER_MAX,
             value=float(self.house_asset.personal_demand),
@@ -189,13 +195,6 @@ class HouseHoldCard(AssetCard):
             step=0.05
         )
 
-        # Slider to change number of residents
-        st.slider(
-            "Number of Residents",
-            min_value=0, max_value=self.NUM_RESIDENTS_MAX,
-            value=int(self.house_asset.num_residents),
-            key=self.nr_key
-        )
 
 class ChargerCard(AssetCard):
     # Settings
@@ -216,7 +215,6 @@ class ChargerCard(AssetCard):
             self.charger_asset.max_cars_charging = st.session_state[self.cars_key]
 
     def render_ui_elements(self):
-
         # Slider to change Max cars charging
         st.slider(
             "Max Cars Amount",
@@ -232,7 +230,8 @@ class ChargerCard(AssetCard):
             value=float(self.charger_asset.peak_power_demand),
             key=self.cap_key
         )
-        st.text(f"Current Cars Charging: {self.charger_asset.cars_charging}")
+        ccc = self.charger_asset.cars_charging if self.charger_asset.is_connected else 0
+        st.text(f"Current Cars Charging: {ccc}")
 
 
 class FactoryCard(AssetCard):
@@ -261,7 +260,7 @@ class FactoryCard(AssetCard):
 
 class SmartHomeCard(AssetCard):
     # Settings
-    MAX_RESIDENTS_SLIDER_MAX = 8
+    MAX_RESIDENTS_SLIDER_MAX = 10
     MAX_CAPACITY_SLIDER_MAX = 20.0
 
     def __init__(self, smart_home_asset: SmartHome, on_remove: Callable[[UUID], None]):
