@@ -7,8 +7,11 @@ class EnergyAsset(ABC):
     """
 
     def __init__(self, name: str = "EnergyAsset", is_connected: bool = True):
+        """Initializes an Energy Asset for the energy grid."""
         self.name = name
         self.is_connected = is_connected
+
+        # Generate UUID for each asset
         self.asset_id = uuid.uuid4()
 
     def toggle_connect(self):

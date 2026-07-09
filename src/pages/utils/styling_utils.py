@@ -1,6 +1,8 @@
 import streamlit as st
 
 def inject_custom_css():
+    """Injects custom CSS to adjust Streamlit page padding and force buttons in the AssetCard to the bottom."""
+
     # Moves Buttons to the bottom
     st.markdown("""
         <style>

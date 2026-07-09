@@ -12,6 +12,9 @@ from pages.utils.styling_utils import inject_custom_css
 
 @st.fragment(run_every=1)
 def live_dashboard():
+    """Updates the streamlit interface every second and call step method"""
+
+
     st.session_state.grid_simulator.step()
     main_screen(
         assets=st.session_state.grid_simulator.grid_members,
@@ -21,17 +24,26 @@ def live_dashboard():
         )
     )
 
+
 def main():
+    """Main function of the app"""
+
+    # Use streamlit wide layout
     st.set_page_config(layout="wide")
+
+    # Create Grid simulator and put it into session state if it doesn't exist
     if "grid_simulator" not in st.session_state:
         st.session_state.grid_simulator = GridSimulator(WeatherController(), BatteryController())
-    inject_custom_css()
+
+    # Add default Asset Cards
     if not st.session_state.grid_simulator.grid_members:
         st.session_state.grid_simulator.add_member(SolarPlant())
         st.session_state.grid_simulator.add_member(PowerPlant())
 
-    if "sim_time" not in st.session_state:
-        st.session_state.sim_time = 0
+    # Inject custom css for more customization of the streamlit ui
+    inject_custom_css()
+
+    # start live dashboard and update function
     live_dashboard()
 
 

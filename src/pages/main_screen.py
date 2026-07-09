@@ -23,19 +23,20 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
     Rendering main screen/dashboard including asset cards
     """
     col_widths = [2, 8, 2] # ratio: Build Menu, Assets, Statistics
-    main_cols = st.columns(col_widths, gap="small")
+    main_cols = st.columns(col_widths)
 
 
     # BUILD MENU
     def add_asset(asset_class: Type[EnergyAsset]):
-        """Callback: creates a new asset and adds it to the grid simulator."""
+        """creates a new asset and adds it to the grid simulator."""
         new_asset = asset_class()
         st.session_state.grid_simulator.add_member(new_asset)
 
     def remove_asset(asset_id: UUID):
-        """Callback: removes an asset from the grid simulator."""
+        """Removes an asset from the grid simulator using the asset_id."""
         st.session_state.grid_simulator.remove_member(asset_id)
 
+    # Show menu buttons to add an asset to the simulation
     with main_cols[0]:
         with st.container(height=110, border=False):    
             st.title("Build Menu")
@@ -103,7 +104,7 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
 
     with main_cols[1]:
         with st.container(height=110, border=False):
-            header_cols = st.columns([6, 2, 1], gap="small") # ratio: Header and time indicatorx
+            header_cols = st.columns([6, 2, 1], gap="small") # ratio: Header and time/days
             with header_cols[0]:
                 st.title("Assets")
             with header_cols[1]:
@@ -112,6 +113,7 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
             with header_cols[2]:
                 st.metric(label="Days", value=f"{current_time // 24}")
 
+        # Renders each Asset cards for each asset in the simulation
         with st.container(height=760, border=True):
             CARDS_PER_ROW = 3
             grid_cols = st.columns(CARDS_PER_ROW)
@@ -141,12 +143,7 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
         with st.container(height=760, border=True):
 
             # Total production calculation and visualization
-            total_kwh = 0
-
-
-            for a in assets:
-                if a.is_connected:
-                    total_kwh += a.update(current_time, weather_data)
+            total_kwh = st.session_state.grid_simulator.update_assets(current_time, weather_data)
 
             st.metric("Current Net-Power", f"{total_kwh:.2f} kW")
             st.divider()
