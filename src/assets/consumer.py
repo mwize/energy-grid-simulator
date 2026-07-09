@@ -14,6 +14,8 @@ class Consumer(EnergyAsset, ABC):
 
     def update(self, current_hour: int, weather_data: dict) -> float:
         """Returns current power consumption"""
+
+        # Only return power consumption if asset is connected else zero
         if self.is_connected:
             return self.consume(current_hour)
         return 0

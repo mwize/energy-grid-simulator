@@ -14,17 +14,12 @@ class WeatherController:
     NOISE_SMOOTHING = 0.3
 
     def __init__(self):
-        self.weather_data = {}   # Cache: hour -> weather dict
         self.sun_noise = 0.0
         self.wind_noise = 0.0
 
     def get_weather_data(self, current_hour: int) -> dict:
         """Returns the weather data for the given hour."""
 
-        # Return cached value if this hour was already computed, so repeated
-        # calls within the same hour (e.g. from grid_simulator.step()) stay consistent
-        if current_hour in self.weather_data:
-            return self.weather_data[current_hour]
 
         # Base curve: sun follows a 24h day/night cycle, wind a slightly different rhythm
         sun_base = 0.5 + 0.5 * math.sin((2 * math.pi / 24) * current_hour - math.pi / 2)
@@ -38,11 +33,6 @@ class WeatherController:
         wind_intensity = utils.clamp(wind_base + self.wind_noise * self.WIND_NOISE, 0, 1)
 
         result = {"sun_intensity": sun_intensity, "wind_intensity": wind_intensity}
-        self.weather_data[current_hour] = result
 
-        # Keep cache small, mirroring power_history in grid_simulator.py
-        if len(self.weather_data) > 50:
-            oldest = min(self.weather_data)
-            del self.weather_data[oldest]
 
         return result

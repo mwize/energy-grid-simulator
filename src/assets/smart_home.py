@@ -14,6 +14,8 @@ class SmartHome(HouseHold):
 
     def update(self, current_hour: int, weather_data: dict) -> float:
         """Returns net energy balance for the smart home"""
+
+        # Only return power production if asset is connected else zero
         if not self.is_connected:
             return 0
         return self.solar_panel.produce(current_hour, weather_data) + self.consume(current_hour)

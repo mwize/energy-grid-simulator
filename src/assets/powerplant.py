@@ -5,7 +5,7 @@ class PowerPlant(Producer):
     """Produces constant energy from fossile energy sources"""
 
     def __init__(self, max_capacity: float = 20.0, name: str = "Powerplant"):
-        """Initializer for PowerPlant. max_capacity asset_id and name is optional"""
+        """Initializer for PowerPlant. With a default capacity of 20 kw"""
         super().__init__(name=name , max_capacity=max_capacity, efficiency=1)
 
     def produce(self, current_hour: int, weather_data: dict) -> float:

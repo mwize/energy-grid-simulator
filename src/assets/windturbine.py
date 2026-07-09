@@ -5,7 +5,7 @@ class WindTurbine(Producer):
     """Produces energy when the wind is blowing."""
 
     def __init__(self, max_capacity: float = 5.0, name: str = "Wind Turbine"):
-        """Initializer for WindTurbine. max_capacity, asset_id and name is optional"""
+        """Initializer for WindTurbine."""
         super().__init__(name=name, max_capacity=max_capacity, efficiency=1)
 
     def produce(self, current_hour: int, weather_data: dict) -> float:
