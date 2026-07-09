@@ -37,6 +37,10 @@ From the repository root:
 streamlit run src/main.py
 ```
 
+Use the version hosted on streamlit
+
+https://energy-grid-simulator.streamlit.app/
+
 ### Development Notes
 
 - The app starts with a default `SolarPlant` and `PowerPlant`.
