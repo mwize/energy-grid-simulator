@@ -129,7 +129,7 @@ class PowerPlantCard(AssetCard):
 # Asset Card for WindTurbine
 class WindTurbineCard(AssetCard):
     # Settings
-    WIND_SLIDER_MAX = 15.0
+    WIND_SLIDER_MAX = 10.0
 
     def __init__(self, wind_asset: WindTurbine, on_remove: Callable[[UUID], None]):
         super().__init__("💨", wind_asset, on_remove)
@@ -171,6 +171,13 @@ class HouseHoldCard(AssetCard):
     def render_ui_elements(self):
         # Power Demand slider to change Production
         st.slider(
+            "Number of Residents",
+            min_value=0, max_value=self.NUM_RESIDENTS_MAX,
+            value=int(self.house_asset.num_residents),
+            key=self.nr_key
+        )
+
+        st.slider(
             "Base-Demand per Person",
             min_value=0.0, max_value=self.PER_PERSON_POWER_MAX,
             value=float(self.house_asset.personal_demand),
@@ -178,12 +185,6 @@ class HouseHoldCard(AssetCard):
             step=0.05
         )
 
-        st.slider(
-            "Number of Residents",
-            min_value=0, max_value=self.NUM_RESIDENTS_MAX,
-            value=int(self.house_asset.num_residents),
-            key=self.nr_key
-        )
 
 class ChargerCard(AssetCard):
     # Settings
@@ -247,7 +248,7 @@ class FactoryCard(AssetCard):
 
 class SmartHomeCard(AssetCard):
     # Settings
-    MAX_RESIDENTS_SLIDER_MAX = 8
+    MAX_RESIDENTS_SLIDER_MAX = 10
     MAX_CAPACITY_SLIDER_MAX = 20.0
 
     def __init__(self, smart_home_asset: SmartHome, on_remove: Callable[[UUID], None]):
