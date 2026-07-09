@@ -148,7 +148,10 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
                 if a.is_connected:
                     total_kwh += a.update(current_time, weather_data)
 
-            st.metric("Current Net-Power", f"{total_kwh:.2f} kW")
+            actual_kW = f"{total_kwh:.2f} kW"
+            actual_kW = "0.00 kW" if st.session_state.grid_simulator.battery_controller.max_kwh == 0 and total_kwh <= 0 else actual_kW
+            
+            st.metric("Current Net-Power", actual_kW)
             st.divider()
 
             df = pd.DataFrame(st.session_state.grid_simulator.power_history).set_index("Time")

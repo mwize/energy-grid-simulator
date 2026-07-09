@@ -70,7 +70,7 @@ class GridSimulator:
         return self.battery_controller.store(net_balance)
 
     def overload_check(self, bal: float) -> bool:
-        """Checks whether the grid is currently overloaded and turns off all Assets if this is the case"""
+        """Checks whether the grid is currently overloaded and turns off all  Consiuming Assets if this is the case"""
         if bal < 0:
             for asset in self.grid_members:
                 if isinstance(asset, Consumer):
