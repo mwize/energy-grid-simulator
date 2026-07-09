@@ -232,7 +232,8 @@ class ChargingStationCard(AssetCard):
             value=float(self.charger_asset.peak_power_demand),
             key=self.cap_key
         )
-        st.text(f"Current Cars Charging: {self.charger_asset.cars_charging}")
+        ccc = self.charger_asset.cars_charging if self.charger_asset.is_connected else 0
+        st.text(f"Current Cars Charging: {ccc}")
 
 
 class FactoryCard(AssetCard):
