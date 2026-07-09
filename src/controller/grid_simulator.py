@@ -29,7 +29,7 @@ class GridSimulator:
             "consumption": self.get_consumption_sum(self.time_elapsed, self.weather_controller.get_weather_data(self.time_elapsed)),
             "wind": weather["wind_intensity"],
             "sun": weather["sun_intensity"],
-            "charge": (self.battery_controller.curr_kwh/ self.battery_controller.max_kwh)*100
+            "charge": (self.battery_controller.curr_kwh/ self.battery_controller.max_kwh)*100 if self.battery_controller.max_kwh > 0 else 0
         })
 
         if len(self.power_history) > 50:
