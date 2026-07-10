@@ -20,7 +20,7 @@ Interactive Streamlit app for simulating a small energy grid with producers, con
 
 ### Requirements
 
-- Python 3.11+ (recommended)
+- Python 3.14+ (recommended)
 - Dependencies listed in `/requirements.txt`
 
 ### Installation
