@@ -14,4 +14,5 @@ class SolarPlant(Producer):
 
         # Calculate daily solar factor using a shifted sine wave, exponentiated
         # to simulate rapid morning rise/evening drop, then scale by constraints.
-        return (utils.clamp((0.6 * math.sin(math.pi / 12 * current_hour - 2) + 0.6), 0, 1) ** 1.5) * weather_data["sun_intensity"] * self.max_capacity * self.efficiency
+        coeffcient = weather_data["sun_intensity"] * self.max_capacity * self.efficiency
+        return (utils.clamp((0.6 * math.sin(math.pi / 12 * current_hour - 2) + 0.6), 0, 1) ** 1.5) * coeffcient

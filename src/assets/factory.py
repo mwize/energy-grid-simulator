@@ -10,7 +10,7 @@ class Factory(Consumer):
 
         # In the night the factory is using more energy than the day due to extra shits
         consumption_profile = [2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2]
-        super().__init__(name = name, peak_power_demand = peak_power_demand, consumption_profile = consumption_profile)
+        super().__init__(name=name, peak_power_demand=peak_power_demand, consumption_profile=consumption_profile)
 
     def consume(self, current_hour)  -> float:
         """Returns the consumption of the factory at a given hour based on the consumption profile."""

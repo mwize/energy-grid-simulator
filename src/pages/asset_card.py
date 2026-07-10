@@ -11,7 +11,7 @@ from assets.powerplant import PowerPlant
 from assets.solarplant import SolarPlant
 from assets.windturbine import WindTurbine
 
-from assets.household import HouseHold
+from assets.household import Household
 from assets.charging_station import ChargingStation
 from assets.factory import Factory
 
@@ -160,12 +160,12 @@ class WindTurbineCard(AssetCard):
             key=self.cap_key
         )
 
-class HouseHoldCard(AssetCard):
+class HouseholdCard(AssetCard):
     # Settings
     PER_PERSON_POWER_MAX = 8.0
     NUM_RESIDENTS_MAX = 10
 
-    def __init__(self, house_asset: HouseHold, on_remove: Callable[[UUID], None]):
+    def __init__(self, house_asset: Household, on_remove: Callable[[UUID], None]):
         super().__init__("🏠", house_asset, on_remove)
 
         self.pd_key = f"pd_key_{self.asset.asset_id}"  # Key for capacity slider
@@ -196,7 +196,7 @@ class HouseHoldCard(AssetCard):
         )
 
 
-class ChargerCard(AssetCard):
+class ChargingStationCard(AssetCard):
     # Settings
     MAX_CARS_SLIDER_MAX = 8
     MAX_POWER_PER_CAR = 6.0  # kW
@@ -349,10 +349,10 @@ def create_asset_card(asset: EnergyAsset, on_remove: Callable[[UUID], None]) -> 
         return PowerPlantCard(asset, on_remove)
     elif isinstance(asset, WindTurbine):
         return WindTurbineCard(asset, on_remove)
-    elif isinstance(asset, HouseHold):
-        return HouseHoldCard(asset, on_remove)
+    elif isinstance(asset, Household):
+        return HouseholdCard(asset, on_remove)
     elif isinstance(asset, ChargingStation):
-        return ChargerCard(asset, on_remove)
+        return ChargingStationCard(asset, on_remove)
     elif isinstance(asset, Factory):
         return FactoryCard(asset, on_remove)
     

@@ -5,7 +5,7 @@ from uuid import UUID
 
 from assets.energy_asset import EnergyAsset
 
-from assets.household import HouseHold
+from assets.household import Household
 from assets.charging_station import ChargingStation
 from assets.factory import Factory
 
@@ -16,6 +16,22 @@ from assets.windturbine import WindTurbine
 from assets.smart_home import SmartHome
 
 from pages.asset_card import create_asset_card, BatteryCard
+
+PRODUCER_ASSET_BUTTONS = [
+    ("Wind Turbine", "wind_power", WindTurbine),
+    ("Power Plant", "bolt", PowerPlant),
+    ("Solar", "solar_power", SolarPlant),
+]
+
+CONSUMER_ASSET_BUTTONS = [
+    ("Household", "house", Household),
+    ("Charging Station", "charger", ChargingStation),
+    ("Factory", "factory", Factory),
+]
+
+OTHER_ASSET_BUTTONS = [
+    ("Smart Home", "home_health", SmartHome),
+]
 
 
 def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict):
@@ -42,66 +58,20 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
             st.title("Build Menu")
         with st.container(height=760, border=True):
             st.subheader("Producer")
-            st.button(
-                "Wind Turbine",
-                icon=":material/wind_power:",
-                use_container_width=True,
-                on_click=add_asset, 
-                args=(WindTurbine,),
-            )
-            st.button(
-                "Power Plant",
-                icon=":material/bolt:",
-                use_container_width=True,
-                on_click=add_asset, 
-                args=(PowerPlant,),
-            )
-            st.button(
-                "Solar",
-                icon=":material/solar_power:",
-                use_container_width=True,
-                on_click=add_asset, 
-                args=(SolarPlant,),
-            )
-
+            for label, icon, cls in PRODUCER_ASSET_BUTTONS:
+                st.button(label, icon=f":material/{icon}:", use_container_width=True, on_click=add_asset, args=(cls,))
 
             st.subheader("Consumer")
-            st.button(
-                "Household",
-                icon=":material/house:",
-                use_container_width=True,
-                on_click=add_asset, 
-                args=(HouseHold,),
-            )
-            st.button(
-                "Charging Station",
-                icon=":material/charger:",
-                use_container_width=True,
-                on_click=add_asset, 
-                args=(ChargingStation,),
-            )
-            st.button(
-                "Factory",
-                icon=":material/factory:",
-                use_container_width=True,
-                on_click=add_asset, 
-                args=(Factory,),
-            )
-
+            for label, icon, cls in CONSUMER_ASSET_BUTTONS:
+                st.button(label, icon=f":material/{icon}:", use_container_width=True, on_click=add_asset, args=(cls,))
 
             st.subheader("Other")
-            st.button(
-                "Smart Home",
-                icon=":material/home_health:",
-                use_container_width=True,
-                on_click=add_asset, 
-                args=(SmartHome,),
-            )
+            for label, icon, cls in OTHER_ASSET_BUTTONS:
+                st.button(label, icon=f":material/{icon}:", use_container_width=True, on_click=add_asset, args=(cls,))
             
 
 
     # Assets Menu
-
     with main_cols[1]:
         with st.container(height=110, border=False):
             header_cols = st.columns([6, 2, 1], gap="small") # ratio: Header and time/days
@@ -136,14 +106,13 @@ def main_screen(assets: list[EnergyAsset], current_time: int, weather_data: dict
 
 
     # STATISTICS
-
     with main_cols[2]:
         with st.container(height=110, border=False):
             st.title("Statistics")
         with st.container(height=760, border=True):
 
             # Total production calculation and visualization
-            total_kwh = st.session_state.grid_simulator.update_assets(current_time, weather_data)
+            total_kwh = st.session_state.grid_simulator.energy_data[0]
 
             actual_kW = f"{total_kwh:.2f} kW"
             actual_kW = "0.00 kW" if st.session_state.grid_simulator.battery_controller.max_kwh == 0 and total_kwh <= 0 else actual_kW
