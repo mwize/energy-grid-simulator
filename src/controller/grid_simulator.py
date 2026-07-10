@@ -1,5 +1,7 @@
 from assets.consumer import Consumer
 from assets.producer import Producer
+import utils as utils
+
 from controller.battery_controller import BatteryController
 from controller.weather_controller import WeatherController
 
@@ -8,6 +10,7 @@ class GridSimulator:
     """Orchestrates the simulation over all connected grid members."""
 
     def __init__(self, weather_controller: WeatherController, battery_controller: BatteryController):
+        self.energy_data = (0, 0, 0)  # balance, production, consumption
         self.time_elapsed = 0
         self.grid_members = []
         self.power_history = []
@@ -25,62 +28,44 @@ class GridSimulator:
     def step(self) -> None:
         """Simulates one time step (one hour)."""
 
-        # calculates current power balance for a given time step and the curreth weather
-        balance = self.update_assets(self.time_elapsed, self.weather_controller.get_weather_data(self.time_elapsed))
+        weather_data = self.weather_controller.get_weather_data(self.time_elapsed)
+
+        self.energy_data = self.update_assets(self.time_elapsed, weather_data)
 
         # Checks if battery is overloaded
-        actual_diff = self.update_battery(balance)
+        actual_diff = self.update_battery(self.energy_data[0])
         self.overload_check(actual_diff)
 
         # Update chart history
-        self.update_history()
+        self.update_history(weather_data, self.energy_data)
 
         # Update time
         self.time_elapsed += 1
-
-    def update_history(self):
+    
+    def update_assets(self, current_hour: int, weather_data: dict) -> tuple[float, float, float]:
+        production = consumption = balance = 0
+        for asset in self.grid_members:
+            val = asset.update(current_hour, weather_data)
+            balance += val
+            if val > 0: production += val
+            else: consumption += -val
+        return balance, production, consumption
+    
+    def update_history(self, weather_data: dict, energy_data: tuple) -> None:
         """Update chart history."""
 
-        weather = self.weather_controller.get_weather_data(self.time_elapsed)
         self.power_history.append({
             "Time": self.time_elapsed,
-            "production": self.get_production_sum(self.time_elapsed,
-                                                  self.weather_controller.get_weather_data(self.time_elapsed)),
-            "consumption": self.get_consumption_sum(self.time_elapsed,
-                                                    self.weather_controller.get_weather_data(self.time_elapsed)),
-            "wind": weather["wind_intensity"],
-            "sun": weather["sun_intensity"],
-            "charge": (self.battery_controller.curr_kwh / self.battery_controller.max_kwh) * 100 if self.battery_controller.curr_kwh > 0 else 0
+            "production": energy_data[1],
+            "consumption": energy_data[2],
+            "wind": weather_data["wind_intensity"],
+            "sun": weather_data["sun_intensity"],
+            "charge": utils.clamp(self.battery_controller.curr_kwh / self.battery_controller.max_kwh, 0 , 1) * 100 if self.battery_controller.curr_kwh > 0 else 0
         })
 
         # Remove oldest data point if history is too long
         if len(self.power_history) > 50:
             self.power_history.pop(0)
-
-    def update_assets(self, current_hour: int, weather_data: dict) -> float:
-        """Calls update() on all members and returns the net balance in kW."""
-        total = 0.0
-        for asset in self.grid_members:
-            total += asset.update(current_hour, weather_data)
-        return total
-
-    def get_production_sum(self, current_hour: int, weather_data: dict) -> float:
-        """Returns the sum of all positive (producing) asset outputs at the given hour."""
-        total = 0.0
-        for asset in self.grid_members:
-            value = asset.update(current_hour, weather_data)
-            if value > 0:
-                total += value
-        return total
-
-    def get_consumption_sum(self, current_hour: int, weather_data: dict) -> float:
-        """Returns the sum of all negative (consuming) asset outputs at the given hour."""
-        total = 0.0
-        for asset in self.grid_members:
-            value = asset.update(current_hour, weather_data)
-            if value < 0:
-                total += -value
-        return total
 
     def update_battery(self, net_balance: float) -> float:
         """Stores surplus or covers a deficit via the battery."""

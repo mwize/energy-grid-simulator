@@ -11,10 +11,10 @@ class ChargingStation(Consumer):
         self.max_cars_charging = max_cars_charging
 
         consumption_profile = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-        super().__init__(name = name, peak_power_demand = peak_power_demand, consumption_profile = consumption_profile)
+        super().__init__(name=name, peak_power_demand=peak_power_demand, consumption_profile=consumption_profile)
 
     def consume(self, current_hour) -> float:
         random.seed(current_hour)
         # Randomly choose number of cars charging (0 to max_cars_charging(set by slider))
         self.cars_charging = random.randint(0, self.max_cars_charging)
-        return -self.cars_charging * self.peak_power_demand
+        return -self.cars_charging * self.peak_power_demand * self.consumption_profile[current_hour % 24]

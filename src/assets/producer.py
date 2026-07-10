@@ -8,7 +8,7 @@ class Producer(EnergyAsset, ABC):
 
     def __init__(self, name: str, max_capacity: float, efficiency: float):
         """Initializes a producer."""
-        super().__init__(name = name)
+        super().__init__(name=name)
         self.max_capacity = max_capacity # in kW
         self.efficiency = efficiency
 
@@ -19,7 +19,6 @@ class Producer(EnergyAsset, ABC):
         if self.is_connected:
             return self.produce(current_hour, weather_data)
         return 0
-
 
     @abstractmethod
     def produce(self, current_hour: int, weather_data: dict) -> float:

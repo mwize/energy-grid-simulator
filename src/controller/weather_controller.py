@@ -19,8 +19,7 @@ class WeatherController:
 
     def get_weather_data(self, current_hour: int) -> dict:
         """Returns the weather data for the given hour."""
-
-
+        
         # Base curve: sun follows a 24h day/night cycle, wind a slightly different rhythm
         sun_base = 0.5 + 0.5 * math.sin((2 * math.pi / 24) * current_hour - math.pi / 2)
         wind_base = 0.5 + 0.3 * math.sin((2 * math.pi / 36) * current_hour)
@@ -33,6 +32,5 @@ class WeatherController:
         wind_intensity = utils.clamp(wind_base + self.wind_noise * self.WIND_NOISE, 0, 1)
 
         result = {"sun_intensity": sun_intensity, "wind_intensity": wind_intensity}
-
 
         return result
