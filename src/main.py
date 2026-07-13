@@ -16,12 +16,13 @@ def live_dashboard():
 
 
     st.session_state.grid_simulator.step()
+
+    # Render with the hour and weather that were just simulated, so the UI
+    # matches the values in balance, battery and history
     main_screen(
         assets=st.session_state.grid_simulator.grid_members,
-        current_time=st.session_state.grid_simulator.time_elapsed,
-        weather_data=st.session_state.grid_simulator.weather_controller.get_weather_data(
-            st.session_state.grid_simulator.time_elapsed
-        )
+        current_time=st.session_state.grid_simulator.last_simulated_hour,
+        weather_data=st.session_state.grid_simulator.last_weather
     )
 
 

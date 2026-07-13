@@ -17,6 +17,11 @@ class GridSimulator:
         self.weather_controller = weather_controller
         self.battery_controller = battery_controller
 
+        # Hour and weather of the last simulated step, so the UI can render
+        # exactly what was simulated instead of recomputing them
+        self.last_simulated_hour = 0
+        self.last_weather = weather_controller.get_weather_data(0)
+
     def add_member(self, asset) -> None:
         """Adds an asset to the grid."""
         self.grid_members.append(asset)
@@ -29,6 +34,10 @@ class GridSimulator:
         """Simulates one time step (one hour)."""
 
         weather_data = self.weather_controller.get_weather_data(self.time_elapsed)
+
+        # Save data frome last frame 
+        self.last_simulated_hour = self.time_elapsed
+        self.last_weather = weather_data
 
         self.energy_data = self.update_assets(self.time_elapsed, weather_data)
 
