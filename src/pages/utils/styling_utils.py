@@ -6,7 +6,7 @@ def inject_custom_css():
     # Moves Buttons to the bottom
     st.markdown("""
         <style>
-        div[data-testid="stVerticalBlock"][height="430px"] {
+        div[data-testid="stVerticalBlock"][height="445px"] {
             display: flex !important;
             flex-direction: column !important;
         }
