@@ -14,7 +14,8 @@ class ChargingStation(Consumer):
         super().__init__(name=name, peak_power_demand=peak_power_demand, consumption_profile=consumption_profile)
 
     def consume(self, current_hour) -> float:
-        random.seed(current_hour)
+        # Per-station RNG seeded by station and hour: value stays stable within an hour
+        rng = random.Random(self.asset_id.int ^ current_hour)
         # Randomly choose number of cars charging (0 to max_cars_charging(set by slider))
-        self.cars_charging = random.randint(0, self.max_cars_charging)
+        self.cars_charging = rng.randint(0, self.max_cars_charging)
         return -self.cars_charging * self.peak_power_demand * self.consumption_profile[current_hour % 24]
